@@ -1,10 +1,10 @@
 name:                2sat
 version:             0.1.0.0
-github:              "githubuser/2sat"
-license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2021 Author name here"
+github:              "albertojcalle/2sat"
+license:             GPL-3.0
+author:              "Alberto J Calle Martinez"
+maintainer:          "albertojcalle@gmail.com"
+copyright:           "2021 Alberto J Calle Martinez"
 
 extra-source-files:
 - README.md
@@ -17,10 +17,11 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/2sat#readme>
+description:         Please see the README on GitHub at <https://github.com/albertojcalle/2sat#readme>
 
 dependencies:
 - base >= 4.7 && < 5
+- containers
 
 library:
   source-dirs: src
@@ -35,7 +36,6 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - 2sat
-
 tests:
   2sat-test:
     main:                Spec.hs
@@ -46,3 +46,17 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - 2sat
+benchmarks:
+  2sat-bench:
+    main: Bench.hs
+    source-dirs: bench
+    ghc-options:
+      - -O2
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - criterion
+      - mios
+    #benchmark-opts:
+    #  benchmark-arguments: "--output bench.html"
