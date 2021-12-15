@@ -6,22 +6,23 @@ module Lib
     setValues
     ) where
 
-import Data.Graph ( scc, buildG, Graph, Edge)
+import Data.Graph ( scc, buildG, Graph, Edge, Forest, Vertex)
 import Data.Tree ( flatten )
+import Data.List (sort)
 type Solution = (Int, Bool)
 
 {-
 -}
 cnfToGraph :: [[Int]] -> Graph
-cnfToGraph c = 
+cnfToGraph c =
     let
-        lowBound = minimum (map minimum c)
-        uppBound = maximum (map maximum c)
         vertList = concatMap (\[x,y]-> [(-x,y),(-y,x)]) c
-{-
-NOTE: interesting error
--}
---        vertList = map (\[x,y]-> (x,y)) c
+        uppBound = maximum (map (uncurry max) vertList)
+        lowBound = - uppBound
+        -- since both x and -x are present there is no need to search for the lower bound 
+        --lowBound = minimum (map minimum c)
+        --NOTE: interesting error
+        -- vertList = map (\[x,y]-> (x,y)) c
     in buildG (lowBound, uppBound) vertList
 
 someFunc :: IO ()
@@ -35,34 +36,44 @@ Supposedly scc uses Tarjan's algorithm, so the output is in reverse topological 
 NOTE: Maybe [] case is good.
 
 -}
-solve :: Graph -> Maybe Solution
-solve g = 
-    let 
+solve :: [[Int]] -> Maybe Solution
+solve x =
+    let
+        g = cnfToGraph x
         sccForest = scc g
-        condensation = condensate sccForest
+        condensation = condensate x sccForest
         solution = setValues condensation
-    in case solution of 
+    in case solution of
         Nothing -> Nothing
         Just x -> Just x
 
 {-
 Builds the condensation of a graph by substituting every strongly connected component with a new variable. The new graph has no cycles.
 TODO: check type signature
-TODO: find opposite values
 TODO: substitution of variables
 -}
+condensate :: [[Int]] -> Forest Vertex -> Maybe (Forest Vertex)
+condensate x y =
+    let
+        componentLs = map (sort . flatten) y
+        contradiction = any opposite componentLs
+        --contradiction = elem True $ map opposite componentLs
+    in Just y
 
-condensate x = 
-    let 
-        componentList = map flatten x
-        contradiction = False --change
-    in Just x
-
+{-
+Whether the opposite element is on the list or not.
+List must be sorted.
+-}
+opposite :: (Eq a, Num a) => [a] -> Bool
+opposite ls =  case ls of
+    x:y:xs -> (x == negate y && x /= 0) || opposite (y:xs)
+    [x]    -> False
+    []     -> False
 
 
 {-
 -}
 
-setValues x = case x of 
+setValues x = case x of
     Nothing -> Nothing
     Just x -> Just (1,True)

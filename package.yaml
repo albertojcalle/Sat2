@@ -3,7 +3,7 @@ version:             0.1.0.0
 github:              "albertojcalle/2sat"
 license:             GPL-3.0
 author:              "Alberto J Calle Martinez"
-maintainer:          "albertojcalle@gmail.com"
+maintainer:          "48741642+albertojcalle@users.noreply.github.com"
 copyright:           "2021 Alberto J Calle Martinez"
 
 extra-source-files:
@@ -36,6 +36,9 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - 2sat
+    when:
+    - condition: false
+      other-modules: Paths_2sat  # your package name here
 tests:
   2sat-test:
     main:                Spec.hs
