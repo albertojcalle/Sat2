@@ -35,6 +35,8 @@ library
   build-depends:
       base >=4.7 && <5
     , containers
+    , minisat
+    , mios
   default-language: Haskell2010
 
 executable 2sat-exe
@@ -46,6 +48,8 @@ executable 2sat-exe
       2sat
     , base >=4.7 && <5
     , containers
+    , minisat
+    , mios
   default-language: Haskell2010
 
 test-suite 2sat-test
@@ -60,6 +64,8 @@ test-suite 2sat-test
       2sat
     , base >=4.7 && <5
     , containers
+    , minisat
+    , mios
   default-language: Haskell2010
 
 benchmark 2sat-bench
@@ -74,5 +80,6 @@ benchmark 2sat-bench
       base >=4.7 && <5
     , containers
     , criterion
+    , minisat
     , mios
   default-language: Haskell2010

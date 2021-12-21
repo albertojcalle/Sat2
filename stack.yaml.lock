@@ -11,6 +11,13 @@ packages:
       sha256: 4adcfb8789415b210df43a9f6c2b445511816527be1a2fb4b950a6e103d4a590
   original:
     hackage: mios-1.6.2@sha256:18cfd492792cf4f0fbd8664aee8717fe75771355921d47d69f23b67eed1280a4,5077
+- completed:
+    hackage: minisat-0.1.3@sha256:3654d6c19268c2ad1e5e15314e399ce153214ffd3da2404e1efacfa5297dc6c7,1213
+    pantry-tree:
+      size: 1949
+      sha256: c2ae220f1723266754c8637de63578a8f774da017dc7ec271d9bc6f3e538c25c
+  original:
+    hackage: minisat-0.1.3@sha256:3654d6c19268c2ad1e5e15314e399ce153214ffd3da2404e1efacfa5297dc6c7,1213
 snapshots:
 - completed:
     size: 534126
