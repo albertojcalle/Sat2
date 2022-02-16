@@ -7,8 +7,8 @@ module Lib
     setValues
     ) where
 
-import Data.Graph ( scc, buildG, Graph, Edge, Forest, Vertex, topSort)
-import Data.Tree ( flatten )
+import Data.Graph ( scc, buildG, path, Graph, Edge, Forest, Vertex)
+import Data.Tree ( flatten, drawForest )
 import Data.List (sort)
 
 --TODO: Make a function solveSatInfo that finds all 4 values. 
@@ -48,8 +48,9 @@ TODO: If there is no solution it should return the contradictions that make it u
 solve :: Sat2 -> Either Solution Contradiction
 solve x =
     let
-        sccForest = (scc . cnfToGraph) x
-        condensation = condensate x sccForest
+        satGraph = cnfToGraph x
+        sccS = map (sort . flatten) $ scc satGraph 
+        condensation = condensate satGraph sccS
         --solution = setValues condensation
     in case condensation of
         Right x -> Right x 
@@ -59,14 +60,28 @@ solve x =
 {-|
 Either returns the first contradiction that makes the problem unsolvable or a list of equivalences in the formula. An equivalence is a sorted list of literals which could have the same value.
 -}
-condensate :: Sat2 -> Forest Vertex -> Either [Equivalence] Contradiction
-condensate x y =
+--condensate :: Sat2 -> [Equivalence] -> Either [Equivalence] Contradiction
+condensate :: Graph -> [Equivalence] -> Either [Equivalence] Contradiction
+condensate satGraph sccS =
     let
-        sccS = map (sort . flatten) y
         firstContradiction = dropWhile (not . opposite) sccS
     in case firstContradiction of 
         [] -> Left sccS
         x:_  -> Right x
+
+
+condensateR satGraph sccS = 
+    let
+        newComponents = zip ([1..] :: [Int]) sccS 
+        connected = path satGraph
+        --wether tho components have connected edges on the original formula
+        --TODO: maybe this is inefficient since there are repeated path executions
+        yesNo xs ys = or (connected <$> xs <*> ys)
+        --TODO: condensated graph check acyclic and skew-symetric
+        newGraph = buildG (1,2) [(1,2)]
+
+    in (satGraph, sccS)
+
 
 {-|
 Whether the opposite element is on the list or not.
@@ -92,6 +107,12 @@ cnfToGraph c =
         uppBound = maximum (map (uncurry max) vertList)
         lowBound = - uppBound
     in buildG (lowBound, uppBound) vertList
+
+{- drawVertexForest :: p -> Forest Vertex  -> String
+drawVertexForest x = 
+    let 
+    in 
+        drawForest  -}
 
 --TODO: FUNCTIONS UNUSED - MAYBE DELETE
 
