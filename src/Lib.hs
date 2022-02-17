@@ -33,7 +33,7 @@ strongly connected components.
 
 TODO: It may be used to give partial solutions.
 -}
-type Equivalence = [Int]
+type Equivalence = (Int, [Int])
 {-
 The strongly connected component that causes a contradiction. To be used when proof is needed that a formula is unsolvable.
 -}
@@ -61,7 +61,7 @@ solve x =
 Either returns the first contradiction that makes the problem unsolvable or a list of equivalences in the formula. An equivalence is a sorted list of literals which could have the same value.
 -}
 --condensate :: Sat2 -> [Equivalence] -> Either [Equivalence] Contradiction
-condensate :: Graph -> [Equivalence] -> Either [Equivalence] Contradiction
+--condensate :: Graph -> [Equivalence] -> Either [Equivalence] Contradiction
 condensate satGraph sccS =
     let
         firstContradiction = dropWhile (not . opposite) sccS
@@ -69,19 +69,29 @@ condensate satGraph sccS =
         [] -> Left sccS
         x:_  -> Right x
 
-
+--condensateR:: Graph -> [Equivalence] -> (Graph, [(Int, Equivalence)])
 condensateR satGraph sccS = 
     let
         newComponents = zip ([1..] :: [Int]) sccS 
-        connected = path satGraph
-        --wether tho components have connected edges on the original formula
-        --TODO: maybe this is inefficient since there are repeated path executions
-        yesNo xs ys = or (connected <$> xs <*> ys)
+        buildNewGraph = buildEdges <$> newComponents
         --TODO: condensated graph check acyclic and skew-symetric
         newGraph = buildG (1,2) [(1,2)]
 
-    in (satGraph, sccS)
+    in (newGraph, newComponents)
 
+{-|
+-}
+buildEdges :: (Int, [Int]) -> (Int, [Int]) -> Graph -> Maybe (Int, Int)
+buildEdges (x,xs) (y,ys) g = 
+    if areConnected g xs ys 
+        then Just (x,y) 
+        else Nothing 
+{-|
+--wether tho components xs, ys have connected edges on the original formula
+--TODO: maybe this is inefficient since there are repeated path executions
+-}
+areConnected :: Graph -> [Int] -> [Int] -> Bool
+areConnected g xs ys = or (path g <$> xs <*> ys)
 
 {-|
 Whether the opposite element is on the list or not.
