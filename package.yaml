@@ -24,6 +24,7 @@ dependencies:
 - containers
 - mios
 - minisat
+- filepath
 
 library:
   source-dirs: src
