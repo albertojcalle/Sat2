@@ -4,6 +4,7 @@ import System.IO (FilePath)
 import SAT.Mios ( solveSAT, CNFDescription(CNFDescription) )
 import SAT.Mios.Util.DIMACS ( fromFile, toFile)
 import SAT.Mios.Util.DIMACS.Writer (toDIMACSString)
+import Test.QuickCheck
 
 ruta = "/home/alberto/github/2sat/src/Examples/cnf/"
 
@@ -13,6 +14,12 @@ main = do
     print result
 
 
+{- prop_Solve_Mios :: Sat2 -> Bool
+prop_Solve_Mios sat2 =
+    solve sat2 = miosSolve sat2 -}
+
+miosSolve = 1
+
 
 miosBench :: FilePath -> IO [Int]
 miosBench file = do
@@ -20,14 +27,18 @@ miosBench file = do
     case input of
         Nothing -> error "Bad cnf file conversion."
         Just tuple -> do
-            let clauses = snd tuple
-            let nVar = (fst . fst) tuple
-            let nClauses = (snd . fst) tuple
-            let descript = CNFDescription nVar nClauses file
+            let 
+                ((nVar,nClauses), clauses) = tuple
+                descript = CNFDescription nVar nClauses file
             solveSAT descript clauses
 
--- convert lists to CNF
--- SAT.Mios.Util.DIMACS.Writer.toFile (ruta ++ "sat001.cnf") Examples.Correct.sat001
+{-|
+Saves lists of clauses to a CNF file.
+
+-}
+saveSat2 path name = SAT.Mios.Util.DIMACS.toFile (path ++ name)
+
+--  Examples.Correct.sat001
 
 -- find contradictions
 -- should be True for all examples in incorrect

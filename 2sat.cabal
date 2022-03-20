@@ -25,16 +25,16 @@ source-repository head
 
 library
   exposed-modules:
-      Examples.Correct
-      Examples.Incorrect
       Lib
   other-modules:
       Paths_2sat
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
     , containers
+    , directory
     , filepath
     , minisat
     , mios
@@ -47,8 +47,10 @@ executable 2sat-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       2sat
+    , QuickCheck
     , base >=4.7 && <5
     , containers
+    , directory
     , filepath
     , minisat
     , mios
@@ -64,8 +66,10 @@ test-suite 2sat-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       2sat
+    , QuickCheck
     , base >=4.7 && <5
     , containers
+    , directory
     , filepath
     , minisat
     , mios
@@ -80,9 +84,11 @@ benchmark 2sat-bench
       bench
   ghc-options: -O2 -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , base >=4.7 && <5
     , containers
     , criterion
+    , directory
     , filepath
     , minisat
     , mios

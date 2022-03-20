@@ -6,7 +6,7 @@ module Lib
     solve,
     condensate,
     setValues,
-    cnfToGraph
+    sat2ToGraph
     ) where
 
 import Data.Graph ( buildG, path, scc, Edge, Graph ) 
@@ -53,14 +53,14 @@ Strongly connected component.
 -}
 type Scc = [Int]
 {-|
-Supposedly scc uses Tarjan's algorithm, so the output is in reverse topological order. topSort should be avoided in this case as it is simpler just to reverse the order.
-
 TODO: Check topological order of scc output
+
+Supposedly scc uses Tarjan's algorithm, so the output is in reverse topological order. topSort should be avoided in this case as it is simpler just to reverse the order.
 -}
 solve :: Sat2 -> Either Solution Contradiction
 solve sat2 =
     let
-        (bounds, satGraph) = cnfToGraph sat2
+        (bounds, satGraph) = sat2ToGraph sat2
         sccS = map (sort . flatten) $ scc satGraph 
         info = satInfo{
              graph = satGraph
@@ -118,8 +118,8 @@ setValues g =
 {-|
 Auxiliar function for reading formulas as lists.
 -}
-cnfToGraph :: Sat2 -> ((Int,Int), Graph)
-cnfToGraph c =
+sat2ToGraph :: Sat2 -> ((Int,Int), Graph)
+sat2ToGraph c =
     let
         vertList = concatMap (\[x,y]-> [(-x,y),(-y,x)]) c
         uppBound = maximum (map (uncurry max) vertList)

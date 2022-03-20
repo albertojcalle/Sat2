@@ -5,25 +5,37 @@ import SAT.Mios.Util.DIMACS ( fromFile )
 import System.IO (FilePath)
 import System.FilePath.Posix (makeRelative)
 
+import Data.List
+import System.Directory
+
+--TODO complete folder search and clasification
+examples :: IO [FilePath]
+examples = getDirectoryContents "./src/Examples/"
+
 ruta :: FilePath
-ruta = "src/Examples/original/cnf/uf20-01.cnf" 
+ruta = "./test/Examples/web/cnf/uf20-01.cnf" 
 
 main :: IO ()
-main = do fileSolve ruta
+main = do cnfSolve ruta
 
 
-fileSolve :: FilePath -> IO ()
-fileSolve file =  do 
+cnfSolve :: FilePath -> IO ()
+cnfSolve file =  do 
     input <- fromFile ruta
     case input of
         Nothing -> error "Bad cnf file conversion."
         Just tuple -> do
             let 
                 ((nVar,nClauses), clauses) = tuple
-                description = CNFDescription nVar nClauses ruta
-            case solve clauses of
-                Left s -> putStrLn ( "Solution: " ++ show s)
-                Right c -> putStrLn ( "Contradiction: " ++ show c)
+                isSat2 = 2 == maximum (map length clauses)
+            if isSat2 
+                then
+                    case solve clauses of
+                        Left s -> putStrLn ( "Solution: " ++ show s)
+                        Right c -> putStrLn ( "Contradiction: " ++ show c) 
+                else 
+                    error "Input Cnf file is not a sat2 formula." 
+            
 
 
 miosSolve :: FilePath -> IO [Int]

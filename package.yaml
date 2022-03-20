@@ -25,6 +25,8 @@ dependencies:
 - mios
 - minisat
 - filepath
+- directory
+- QuickCheck
 
 library:
   source-dirs: src
