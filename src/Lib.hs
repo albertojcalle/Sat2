@@ -5,20 +5,21 @@ module Lib
     solution,
     solve,
     condensate,
-    setValues,
-    sat2ToGraph
+    sat2ToGraph,
+    collapseSolution
     ) where
 
-import Data.Graph ( buildG, path, scc, Edge, Graph ) 
+import Data.Graph ( buildG, path, scc, Edge, Graph, components )
 import Data.Tree ( flatten, drawForest )
-import Data.List ( sort )
+import Data.List ( sort, union)
+import Data.List.Extra (disjoint)
 
 {-|
 All the information about a 2sat formula.
  -}
 data SatInfo = SatInfo {
      solution :: Solution
-    ,graph :: Graph 
+    ,graph :: Graph
     ,equivalences :: [Equivalence]
     ,maxLiteral :: Int
     ,solvable :: Maybe Bool
@@ -30,15 +31,15 @@ satInfo :: SatInfo
 satInfo = SatInfo{
      solution = []
     ,graph = buildG (0,0) []
-    ,equivalences = [] 
+    ,equivalences = []
     ,maxLiteral = 0
-    ,solvable = Nothing 
+    ,solvable = Nothing
 }
 type Sat2 = [[Int]]
 {-|
-A particular solution asigns a value T or F to every variable.  
+A positive value corresponds to a true literal, and negative corresponds to false.  
  -}
-type Solution = [(Int, Bool)]
+type Solution = [Int]
 {-|
 Variables that are equivalent to other variables on the original 2sat. On a graph they are
 strongly connected components.
@@ -61,7 +62,7 @@ solve :: Sat2 -> Either Solution Contradiction
 solve sat2 =
     let
         (bounds, satGraph) = sat2ToGraph sat2
-        sccS = map (sort . flatten) $ scc satGraph 
+        sccS = map (sort . flatten) $ scc satGraph
         info = satInfo{
              graph = satGraph
             ,equivalences = zip ([1..] :: [Int]) sccS
@@ -69,8 +70,24 @@ solve sat2 =
         --solution = setValues condensation
     in case condensate info of
         Right x -> Right x
-        Left x ->  Left [(1, True)]
---TODO: Complete cases.
+        Left info ->  Left $ setValues info
+
+--TODO: Strict evaluation?
+setValues :: SatInfo -> Solution
+setValues info =
+    let components = map snd (equivalences info)
+    in foldl collapseSolution [] components
+
+{-|
+Collapses all the components in a particular solution.
+
+If there are already positive asignments for a literal, opposite literals must be assigned to false so the whole component sign is flipped. In the solution a negative sign implies the literal value is false.
+-}
+collapseSolution :: [Int] -> [Int] -> Solution
+collapseSolution solution x
+  | disjoint solution opposite = solution `union` x
+  | otherwise = solution `union` opposite
+  where opposite = map negate x
 
 {-|
 Either returns the first contradiction that makes the problem unsolvable or a list of equivalences in the formula. An equivalence is a sorted list of literals which could have the same value.
@@ -78,8 +95,8 @@ Either returns the first contradiction that makes the problem unsolvable or a li
 condensate :: SatInfo -> Either SatInfo Contradiction
 condensate info =
     let
-        sccS = map snd equivalences2
         equivalences2 = equivalences info
+        sccS = map snd equivalences2
         firstContradiction = dropWhile (not . opposite) sccS
         satGraph = [graph info]
         newEdges =  concat $ buildEdge <$> satGraph  <*> equivalences2 <*> equivalences2
@@ -109,12 +126,6 @@ opposite ls =  case ls of
     [x]    -> False
     []     -> False
 
-setValues g =
-    let
-        
-    in
-         [(1,True)]
-
 {-|
 Auxiliar function for reading formulas as lists.
 -}
@@ -123,9 +134,13 @@ sat2ToGraph c =
     let
         vertList = concatMap (\[x,y]-> [(-x,y),(-y,x)]) c
         uppBound = maximum (map (uncurry max) vertList)
-        lowBound = - uppBound
+        lowBound = -uppBound
         bounds = (lowBound, uppBound)
     in (bounds, buildG bounds vertList)
+
+isSolution :: [a] -> Bool
+isSolution [] = False
+isSolution _ =  True
 
 {- drawVertexForest :: p -> Forest Vertex  -> String
 drawVertexForest x = 

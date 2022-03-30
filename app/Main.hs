@@ -13,7 +13,9 @@ examples :: IO [FilePath]
 examples = getDirectoryContents "./src/Examples/"
 
 ruta :: FilePath
-ruta = "./test/Examples/web/cnf/uf20-01.cnf" 
+--ruta = "./test/Examples/web/cnf/uf20-01.cnf" 
+ruta = "./test/Examples/UNSAT/sat002.cnf" 
+--ruta = "./test/Examples/UNSAT/sat001.cnf" 
 
 main :: IO ()
 main = do cnfSolve ruta

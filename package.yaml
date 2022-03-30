@@ -27,6 +27,8 @@ dependencies:
 - filepath
 - directory
 - QuickCheck
+- MonadRandom
+- extra
 
 library:
   source-dirs: src

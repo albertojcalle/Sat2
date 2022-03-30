@@ -16,9 +16,7 @@ main = do
 
 {- prop_Solve_Mios :: Sat2 -> Bool
 prop_Solve_Mios sat2 =
-    solve sat2 = miosSolve sat2 -}
-
-miosSolve = 1
+    cnfSolve sat2 = miosSolve sat2 -}
 
 
 miosBench :: FilePath -> IO [Int]
