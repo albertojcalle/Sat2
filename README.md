@@ -7,3 +7,11 @@ Despite this restriction 2-sat allows to solve many different real life problems
 Many general solvers exist that are not specific to 2-sat, in many cases implementing DPLL algorithm. However a much faster algorithm exists that was designed only for 2-SAT, the Aspvall-Plass-Tarjan algorithm.
 
 We will try to implement APT in Haskell, not only as an exercise, but as a usable library since currently there is no implementation in haskell.
+
+## Linux installation
+
+### Fedora
+
+We need to install some aditional packages:
+
+sudo dnf install ghc-gtk-devel

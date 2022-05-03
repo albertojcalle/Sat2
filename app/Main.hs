@@ -1,16 +1,21 @@
 module Main where
-import Lib
+
+
+import Sat
+import qualified Menu
+
 import SAT.Mios ( solveSAT, CNFDescription(CNFDescription) )
 import SAT.Mios.Util.DIMACS ( fromFile )
 import System.IO (FilePath)
 import System.FilePath.Posix (makeRelative)
-
 import Data.List
 import System.Directory
 
 --TODO complete folder search and clasification
-examples :: IO [FilePath]
-examples = getDirectoryContents "./src/Examples/"
+path :: IO [FilePath]
+path = getDirectoryContents "./src/Examples/"
+
+
 
 ruta :: FilePath
 --ruta = "./test/Examples/web/cnf/uf20-01.cnf" 
@@ -18,7 +23,8 @@ ruta = "./test/Examples/UNSAT/sat002.cnf"
 --ruta = "./test/Examples/UNSAT/sat001.cnf" 
 
 main :: IO ()
-main = do cnfSolve ruta
+main = Menu.menu
+   -- do cnfSolve ruta
 
 
 cnfSolve :: FilePath -> IO ()

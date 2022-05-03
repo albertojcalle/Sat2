@@ -29,6 +29,7 @@ dependencies:
 - QuickCheck
 - MonadRandom
 - extra
+- gtk
 
 library:
   source-dirs: src

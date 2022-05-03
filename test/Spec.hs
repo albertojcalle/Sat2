@@ -1,5 +1,3 @@
-import Examples.Correct
-import Examples.Incorrect
 import System.IO (FilePath)
 import SAT.Mios ( solveSAT, CNFDescription(CNFDescription) )
 import SAT.Mios.Util.DIMACS ( fromFile, toFile)
