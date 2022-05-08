@@ -1,4 +1,4 @@
-module Menu (
+module OldMenu (
     menu
     ) where
 

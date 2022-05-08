@@ -1,6 +1,9 @@
-module Main where
+{- module Main where
+
 
 import Sat
+import qualified OldMenu
+import qualified Menu
 
 import SAT.Mios ( solveSAT, CNFDescription(CNFDescription) )
 import SAT.Mios.Util.DIMACS ( fromFile )
@@ -13,13 +16,16 @@ import System.Directory
 path :: IO [FilePath]
 path = getDirectoryContents "./src/Examples/"
 
+
+
 ruta :: FilePath
 --ruta = "./test/Examples/web/cnf/uf20-01.cnf" 
 ruta = "./test/Examples/UNSAT/sat002.cnf" 
 --ruta = "./test/Examples/UNSAT/sat001.cnf" 
 
 main :: IO ()
-main = do cnfSolve ruta
+main = Menu.menu
+   -- do cnfSolve ruta
 
 
 cnfSolve :: FilePath -> IO ()
@@ -50,4 +56,4 @@ miosSolve file = do
             let 
                 ((nVar,nClauses), clauses) = tuple
                 description = CNFDescription nVar nClauses file
-            solveSAT description clauses
+            solveSAT description clauses -}
