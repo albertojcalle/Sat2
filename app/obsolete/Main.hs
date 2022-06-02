@@ -56,4 +56,5 @@ miosSolve file = do
             let 
                 ((nVar,nClauses), clauses) = tuple
                 description = CNFDescription nVar nClauses file
-            solveSAT description clauses -}
+            solveSAT description clauses 
+            -}

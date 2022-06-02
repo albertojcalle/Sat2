@@ -1,6 +1,7 @@
 module SatTypes (
     SatInfo (..),
     satInfo,
+    Lit,
     Sat2,
     Scc,
     Solution,
@@ -30,6 +31,7 @@ satInfo = SatInfo{
     ,maxLiteral = 0
     ,solvable = Nothing
 }
+type Lit = Int
 type Sat2 = [[Int]]
 {-|
 A positive value corresponds to a true literal, and negative corresponds to false.  

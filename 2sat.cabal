@@ -25,9 +25,9 @@ source-repository head
 
 library
   exposed-modules:
-      CnfGenerator
       Common
       Sat
+      SatGenerator
       SatTypes
   other-modules:
       Paths_2sat
