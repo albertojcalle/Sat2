@@ -1,24 +1,33 @@
 import System.IO (FilePath)
+import System.Directory (getDirectoryContents)
 import SAT.Mios ( solveSAT, CNFDescription(CNFDescription) )
 import SAT.Mios.Util.DIMACS ( fromFile, toFile)
 import SAT.Mios.Util.DIMACS.Writer (toDIMACSString)
 import Test.QuickCheck
+import SatGenerator (outputPath)
 
-ruta = "/home/alberto/github/2sat/src/Examples/cnf/"
+path :: FilePath
+path = outputPath
 
 main :: IO ()
 main = do 
-    result <- miosBench (ruta ++ "uf20-01.cnf")
+    result <- processCNF (path ++ "Example100-1.cnf")
     print result
 
 
-{- prop_Solve_Mios :: Sat2 -> Bool
+simpleTest :: a
+simpleTest = undefined 
+    where
+        files = getDirectoryContents path
+
+
+{- prop_Solve_Mios :: FilePath -> Bool
 prop_Solve_Mios sat2 =
-    cnfSolve sat2 = miosSolve sat2 -}
+    cnfSolve sat2 = miosBench sat2 -}
 
 
-miosBench :: FilePath -> IO [Int]
-miosBench file = do
+processCNF :: FilePath -> IO (CNFDescription, [[Int]])
+processCNF file = do
     input <- fromFile file
     case input of
         Nothing -> error "Bad cnf file conversion."
@@ -26,18 +35,4 @@ miosBench file = do
             let 
                 ((nVar,nClauses), clauses) = tuple
                 descript = CNFDescription nVar nClauses file
-            solveSAT descript clauses
-
-{-|
-Saves lists of clauses to a CNF file.
-
--}
-saveSat2 path name = SAT.Mios.Util.DIMACS.toFile (path ++ name)
-
---  Examples.Correct.sat001
-
--- find contradictions
--- should be True for all examples in incorrect
--- any opposite $ map (Data.List.sort . Data.Tree.flatten) $ (Data.Graph.scc . cnfToGraph) Examples.Incorrect.unsat002
-
--- map (Data.List.sort . Data.Tree.flatten) $ (Data.Graph.scc . cnfToGraph) Examples.Correct.sat001
+            return (descript, clauses)
