@@ -1,24 +1,15 @@
 module SatGenerator (
     write2Sat,
     eval2Sat,
-    evalKSat,
-    outputPath
+    evalKSat
 ) where
 
 import SatTypes ( Sat2, Lit )
-import SAT.Mios.Util.DIMACS ( toFile )
-import Control.Monad.Random (Rand, StdGen, evalRand, evalRandIO, mkStdGen, uniform)
+import SAT.Mios.Util.DIMACS ( toFile)
+import Control.Monad.Random (Rand, StdGen, evalRand, evalRandIO, mkStdGen, uniform, replicateM_)
 import Control.Monad ( replicateM, zipWithM_ ) 
--- import System.Directory (createDirectoryIfMissing)
--- import System.FilePath.Posix (takeDirectory)
-
 
 type Cloud = Rand StdGen
-
-outputPath :: FilePath
-outputPath = "./test/Examples/SatGenerator/"
-
-
 
 write2Sat :: [Char] -> Int -> Int -> Int -> IO ()
 write2Sat path n vars clauses = zipWithM_ toFile paths satList
@@ -28,7 +19,7 @@ write2Sat path n vars clauses = zipWithM_ toFile paths satList
 
         makePath :: (Show a) => a -> FilePath
         makePath x = 
-            path ++ "/Example" ++ show clauses ++ "-"++ show x ++ ".cnf"
+            path ++ "/2sat-" ++ show clauses ++ "c-" ++ show vars ++ "l-"++ show x ++ ".cnf"
 
 eval2Sat :: Int -> Int -> Int -> [Sat2]
 eval2Sat = evalKSat 2 2022

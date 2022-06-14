@@ -29,6 +29,7 @@ dependencies:
 - QuickCheck
 - MonadRandom
 - extra
+- timeit
 #- gtk
 
 library:
