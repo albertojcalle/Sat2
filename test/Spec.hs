@@ -4,7 +4,7 @@ import SAT.Mios ( solveSAT, CNFDescription(CNFDescription) )
 import SAT.Mios.Util.DIMACS ( fromFile, toFile)
 import SAT.Mios.Util.DIMACS.Writer (toDIMACSString)
 import Test.QuickCheck
-import SatGenerator (outputPath)
+import SolversIO (outputPath) 
 
 path :: FilePath
 path = outputPath

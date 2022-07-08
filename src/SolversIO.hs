@@ -1,16 +1,17 @@
 module SolversIO (
-    miosSolve
+    miosSolve,
+    tarjanSolve,
+    outputPath
 ) where
 
 import GHC.Float (int2Float, float2Int)
 import Data.List ()
 import Sat (solve)
-import SatTypes ( SatInfo, satInfo )
+import SatTypes 
 import System.FilePath.Posix (makeRelative)
 import System.IO (FilePath)
 import System.Directory ( getDirectoryContents, listDirectory, doesFileExist , renameFile,
  getCurrentDirectory, setCurrentDirectory)
-import SatTypes (SatInfo(solvable))
 import Control.Monad (filterM)
 import System.TimeIt ()
 
@@ -18,13 +19,23 @@ import SAT.Mios ( solveSAT, CNFDescription(CNFDescription) )
 import SAT.Mios.Util.DIMACS ( fromFile )
 import SatGenerator (write2Sat)
 
-ruta :: FilePath
-ruta = "./test/Examples/web/cnf/uf20-01.cnf" 
---ruta = "./test/Examples/UNSAT/sat002.cnf" 
+{- ruta :: FilePath
+ruta = "./test/Examples/web/cnf/uf20-01.cnf"
+ -}--ruta = "./test/Examples/UNSAT/sat002.cnf" 
 --ruta = "./test/Examples/UNSAT/sat001.cnf"
 
 outputPath :: FilePath
 outputPath = "/home/alberto/github/2sat/test/Examples/SatGenerator/"
+
+cnfToSat file =
+     do
+    input <- fromFile file
+    case input of
+        Nothing -> error "Bad cnf file conversion."
+        Just tuple -> 
+            let
+                ((nVar, nClauses), clauses) = tuple
+            return clauses
 
 miosSolve :: FilePath -> IO [Int]
 miosSolve file = do
@@ -32,10 +43,31 @@ miosSolve file = do
     case input of
         Nothing -> error "Bad cnf file conversion."
         Just tuple -> do
-            let 
-                ((nVar,nClauses), clauses) = tuple
+            let
+                ((nVar, nClauses), clauses) = tuple
                 description = CNFDescription nVar nClauses file
             solveSAT description clauses
+
+tarjanSolve :: FilePath -> IO ()
+tarjanSolve file =  do
+    input <- fromFile file
+    case input of
+        Nothing -> error "Bad cnf file conversion."
+        Just tuple -> do
+            let
+                ((nVar, nClauses), clauses) = tuple
+                isSat2 = 2 == maximum (map length clauses)
+                info = satInfo{formula = clauses, maxLiteral = nVar}
+            if isSat2
+                then
+                    case solve info of
+                        Left s -> putStrLn ( "Solution: " ++ show s)
+                        Right c -> putStrLn ( "Contradiction: " ++ show c)
+                else
+                    error "Input Cnf file is not a sat2 formula."
+
+
+
 
 {-|
 Checks solvable or not and moves to corresponding directories:
@@ -48,17 +80,17 @@ splitSatIO :: FilePath -> IO ()
 splitSatIO file = do
     solution <- miosSolve file
     let solvable =  not $ null solution
-    let output = if solvable 
+    let output = if solvable
         then "./SAT/" ++ file
         else "./UNSAT/" ++ file
     renameFile file output
 
 
 classify :: FilePath -> IO ()
-classify path = do 
+classify path = do
     setCurrentDirectory outputPath
     paths <- getDirectoryContents outputPath
-    files <- filterM doesFileExist paths 
+    files <- filterM doesFileExist paths
     mapM_ splitSatIO files
 
 generatorMain :: Int -> Int-> IO ()
@@ -66,7 +98,7 @@ generatorMain clauses n = do
     setCurrentDirectory outputPath
     mapM_ funct vars
     paths <- getDirectoryContents "."
-    files <- filterM doesFileExist paths 
+    files <- filterM doesFileExist paths
     mapM_ splitSatIO files
     where
         x = GHC.Float.int2Float clauses
@@ -78,44 +110,27 @@ generatorMain clauses n = do
 
 
 
-
-cnfSolve :: FilePath -> IO ()
-cnfSolve file =  do 
-    input <- fromFile ruta
-    case input of
-        Nothing -> error "Bad cnf file conversion."
-        Just tuple -> do
-            let 
-                ((nVar,nClauses), clauses) = tuple
-                isSat2 = 2 == maximum (map length clauses)
-            if isSat2 
-                then
-                    case solve clauses of
-                        Left s -> putStrLn ( "Solution: " ++ show s)
-                        Right c -> putStrLn ( "Contradiction: " ++ show c) 
-                else 
-                    error "Input Cnf file is not a sat2 formula." 
-
 {-|
 Basic converter of a cnf file to internal module type. Does not solve the formula. Checks if given information is coherent.
 -}
 cnfToSatInfo :: FilePath -> IO SatInfo
-cnfToSatInfo ruta = 
+cnfToSatInfo file =
     do
-        input <- fromFile ruta
+        input <- fromFile file
         case input of
-            Nothing -> error $ "Bad cnf file at path"  ++ ruta
+            Nothing -> error $ "Bad cnf file at path"  ++ file
             Just tuple -> do
-                let 
+                let
                     ((nVar,nClauses), clauses) = tuple
                 if isSat2 clauses
                     then
                         return satInfo
-                    else 
-                        error $ "Input cnf is not sat2 formula at path" ++ ruta
+                    else
+                        error $ "Input cnf is not sat2 formula at path" ++ file
 
 {-|
 Check if there are two literals in each clause.
 TODO: add warning when ther are less than 2 literals
 -}
+isSat2 :: Foldable t => [t a] -> Bool
 isSat2 clauses = 2 == maximum (map length clauses)

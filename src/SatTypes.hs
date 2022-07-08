@@ -15,6 +15,7 @@ All the possible information about a 2sat formula.
  -}
 data SatInfo = SatInfo {
      solution :: Solution
+    ,formula :: Sat2
     ,graph :: Graph
     ,equivalences :: [Equivalence]
     ,maxLiteral :: Int
@@ -26,6 +27,7 @@ Default record values for empty 2sat formula.
 satInfo :: SatInfo
 satInfo = SatInfo{
      solution = []
+    ,formula = []
     ,graph = buildG (0,0) []
     ,equivalences = []
     ,maxLiteral = 0
