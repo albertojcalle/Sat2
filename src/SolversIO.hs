@@ -18,6 +18,7 @@ import System.TimeIt ()
 import SAT.Mios ( solveSAT, CNFDescription(CNFDescription) )
 import SAT.Mios.Util.DIMACS ( fromFile )
 import SatGenerator (write2Sat)
+import GHC.Base (IO(IO))
 
 {- ruta :: FilePath
 ruta = "./test/Examples/web/cnf/uf20-01.cnf"
@@ -27,17 +28,8 @@ ruta = "./test/Examples/web/cnf/uf20-01.cnf"
 outputPath :: FilePath
 outputPath = "/home/alberto/github/2sat/test/Examples/SatGenerator/"
 
-cnfToSat file =
-     do
-    input <- fromFile file
-    case input of
-        Nothing -> error "Bad cnf file conversion."
-        Just tuple -> 
-            let
-                ((nVar, nClauses), clauses) = tuple
-            return clauses
 
-miosSolve :: FilePath -> IO [Int]
+miosSolve :: FilePath -> IO SatInfo
 miosSolve file = do
     input <- fromFile file
     case input of
@@ -46,7 +38,11 @@ miosSolve file = do
             let
                 ((nVar, nClauses), clauses) = tuple
                 description = CNFDescription nVar nClauses file
-            solveSAT description clauses
+            solution <- solveSAT description clauses
+            let info = satInfo{formula = clauses, solution = solution} 
+            return info
+            
+
 
 tarjanSolve :: FilePath -> IO ()
 tarjanSolve file =  do
@@ -75,10 +71,9 @@ Checks solvable or not and moves to corresponding directories:
     - execution time: 1,2,5,10 ...
 Adds comment in DIMACS format.
 -}
-
 splitSatIO :: FilePath -> IO ()
 splitSatIO file = do
-    solution <- miosSolve file
+    solution <- solution <$> miosSolve file
     let solvable =  not $ null solution
     let output = if solvable
         then "./SAT/" ++ file
@@ -108,8 +103,6 @@ generatorMain clauses n = do
         vars = [suelo,(suelo+space)..techo]
         funct y = write2Sat outputPath n y clauses
 
-
-
 {-|
 Basic converter of a cnf file to internal module type. Does not solve the formula. Checks if given information is coherent.
 -}
@@ -124,7 +117,7 @@ cnfToSatInfo file =
                     ((nVar,nClauses), clauses) = tuple
                 if isSat2 clauses
                     then
-                        return satInfo
+                        return satInfo{formula = clauses}
                     else
                         error $ "Input cnf is not sat2 formula at path" ++ file
 

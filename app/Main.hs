@@ -14,12 +14,19 @@ import System.Directory ( getDirectoryContents, listDirectory, doesFileExist , r
 import SatTypes (SatInfo(solvable))
 import Control.Monad (filterM)
 import System.TimeIt
+import Sat
+import SatTypes
 
 path :: IO [FilePath]
 path = getDirectoryContents "./src/Examples/"
 
 main :: IO ()
-main = print "a"
+main = do 
+    let 
+        ruta = outputPath ++ "SAT/2sat-8000c-7200l-5.cnf"  
+    sol1 <- miosSolve ruta
+    let a = subSat (formula sol1) (solution sol1)
+    print a
 
 
             

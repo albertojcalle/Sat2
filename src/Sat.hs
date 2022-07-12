@@ -4,6 +4,10 @@ module Sat
     Sat2,
     solution,
     checkSolution,
+    toAssignment,
+    subSat,
+    subFormula,
+    subLiteral,
     solve
     ) where
 
@@ -50,7 +54,7 @@ Collapses all the components in a particular solution.
 
 If there are already positive Assignments for a literal, opposite literals must be assigned to false so the whole component sign is flipped. In the solution a negative sign implies the literal value is false.
 -}
-collapseSolution :: [Int] -> [Int] -> Solution
+collapseSolution :: Solution -> [Int] -> Solution
 collapseSolution solution x
   | disjoint solution opposite = solution `union` x
   | otherwise = solution `union` opposite
@@ -85,37 +89,34 @@ sat2ToGraph info =
         bounds = (lowBound, uppBound)
     in info{graph = buildG bounds vertList}
 
-
-
-
 {-|
 Checks if a solution is correct for a given Sat formula.
 -}
 
 type Assignment = Either Bool Int
 
-checkSolution :: Sat2 -> Solution -> Bool
-checkSolution sat2 sol =
+checkSolution :: SatInfo -> Bool
+checkSolution info =
     let
-        result = subSat sat2 sol
+        result = subSat (formula info) (solution info)
         isCorrect = all (all isLeft) result
-
-        toAssignment :: Sat2 -> [[Assignment]]
-        toAssignment = (map . map) Right
-
-        subSat :: Sat2 -> Solution -> [[Assignment]]
-        subSat sat2 sol = foldl subFormula (toAssignment sat2) sol
-        
-        subFormula :: [[Assignment]] -> Int -> [[Assignment]]
-        subFormula intro s = (map . map) (`subLiteral` s) intro
-
-        subLiteral :: Assignment -> Int -> Assignment
-        subLiteral lit s = case lit of
-            Left lit -> Left lit
-            Right lit -> case () of
-                ()| lit == s -> Left True
-                  | lit == negate s -> Left False
-                  | otherwise -> Right lit
     in isCorrect
 
 
+
+toAssignment :: Sat2 -> [[Assignment]]
+toAssignment = (map . map) Right
+
+subSat :: Sat2 -> Solution -> [[Assignment]]
+subSat sat2 = foldl subFormula (toAssignment sat2)
+
+subFormula :: [[Assignment]] -> Int -> [[Assignment]]
+subFormula intro s = (map . map) (`subLiteral` s) intro
+
+subLiteral :: Assignment -> Int -> Assignment
+subLiteral lit s = case lit of
+    Left lit -> Left lit
+    Right lit -> case () of
+        ()| lit == s -> Left True
+          | lit == negate s -> Left False
+          | otherwise -> Right lit

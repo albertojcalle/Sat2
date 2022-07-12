@@ -9,6 +9,9 @@ import SolversIO (outputPath)
 path :: FilePath
 path = outputPath
 
+ruta :: FilePath
+ruta = outputPath ++ "SAT/2sat-8000c-7200l-5.cnf"
+
 main :: IO ()
 main = do 
     result <- processCNF (path ++ "Example100-1.cnf")
