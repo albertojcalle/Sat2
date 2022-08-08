@@ -23,12 +23,13 @@ dependencies:
 - base >= 4.7 && < 5
 - containers
 - mios
-- minisat
+#- minisat
 - filepath
 - directory
-- QuickCheck
 - MonadRandom
 - extra
+- QuickCheck
+- hspec
 - timeit
 #- gtk
 
@@ -47,7 +48,7 @@ executables:
     - 2sat
     when:
     - condition: false
-      other-modules: Paths_2sat  # your package name here
+      other-modules: Paths_2sat
 tests:
   2sat-test:
     main:                Spec.hs
@@ -63,12 +64,11 @@ benchmarks:
     main: Bench.hs
     source-dirs: bench
     ghc-options:
-      - -O2
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
       - criterion
-      - mios
-    #benchmark-opts:
-    #  benchmark-arguments: "--output bench.html"
+      - 2sat
+    benchmark-arguments: 
+     - -output bench.html

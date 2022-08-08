@@ -10,6 +10,7 @@ module SatTypes (
     ) where
 
 import Data.Graph ( buildG, path, scc, Edge, Graph, components )
+import SAT.Mios.Solver (Solver(nVars))
 {-|
 All the possible information about a 2sat formula.
  -}
@@ -20,7 +21,9 @@ data SatInfo = SatInfo {
     ,graph :: Graph
     ,equivalences :: [Equivalence]
     ,maxLiteral :: Int
-    ,solvable :: Maybe Bool
+    ,nVar :: Int
+    ,nClauses :: Int
+    ,isSolvable :: Maybe Bool
     } deriving(Show)
 {-|
 Default record values for empty 2sat formula.
@@ -33,7 +36,9 @@ satInfo = SatInfo{
     ,graph = buildG (0,0) []
     ,equivalences = []
     ,maxLiteral = 0
-    ,solvable = Nothing
+    ,nVar = 0
+    ,nClauses = 0
+    ,isSolvable = Nothing
 }
 type Lit = Int
 type Sat2 = [[Int]]

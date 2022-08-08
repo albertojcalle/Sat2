@@ -13,41 +13,44 @@ module Sat
 
 import Data.Graph ( buildG, path, scc, Edge, Graph, components )
 import Data.Tree ( flatten, drawForest )
-import Data.List ( sort, union)
+import Data.List ( sort, union, foldl')
 import Data.List.Extra (disjoint)
 import Common ( buildEdge, opposite )
 import SatTypes
     ( Scc,
-      Contradiction,
       Sat2,
       Solution,
-      SatInfo(equivalences, formula, maxLiteral, graph, solution) )
+      SatInfo(equivalences, contradiction, isSolvable, maxLiteral, graph,
+              formula, solution))
 import GHC.Base (VecElem(Int16ElemRep))
 import Data.Either (isLeft)
+
 
 {-|
 TODO: Check topological order of scc output
 
 Supposedly scc uses Tarjan's algorithm, so the output is in reverse topological order. topSort should be avoided in this case as it is simpler just to reverse the order.
 -}
-solve :: SatInfo -> Either Solution Contradiction
+solve :: SatInfo -> SatInfo
 solve info =
     let
-        sccS = getComponents info2
+        sccS = getComponents info
         info2 = (sat2ToGraph info) {
             equivalences = zip ([1..] :: [Int]) sccS}
-    in case condensate info2 of
-        Right x -> Right x
-        Left info2 ->  Left $ setValues info2
+        result = (setValues . condensate) info2
+    in case isSolvable result of
+        Just _ -> result
+        Nothing -> error "Condensation does not return a valid result."
 
 getComponents :: SatInfo -> [Scc]
 getComponents info = map (sort . flatten) $ scc (graph info)
 
 --TODO: Strict evaluation?
-setValues :: SatInfo -> Solution
+setValues :: SatInfo -> SatInfo
 setValues info =
     let components = map snd (equivalences info)
-    in foldl collapseSolution [] components
+        solution = foldl' collapseSolution [] components
+    in info{solution = solution}
 
 {-|
 Collapses all the components in a particular solution.
@@ -63,7 +66,7 @@ collapseSolution solution x
 {-|
 Either returns the first contradiction that makes the problem unsolvable or a list of equivalences in the formula. An equivalence is a sorted list of literals which could have the same value.
 -}
-condensate :: SatInfo -> Either SatInfo Contradiction
+condensate :: SatInfo -> SatInfo
 condensate info =
     let
         equivalences2 = equivalences info
@@ -73,8 +76,8 @@ condensate info =
         newEdges =  concat $ buildEdge <$> satGraph  <*> equivalences2 <*> equivalences2
         newGraph = buildG (1, maxLiteral info) newEdges
     in case firstContradiction of
-        [] -> Left info{graph = newGraph}
-        x:_  -> Right x
+        [] -> info{graph = newGraph, isSolvable = Just True}
+        c:_  -> info{contradiction = c, isSolvable = Just False}
 
 {-|
 Auxiliar function for reading formulas as lists.
@@ -108,7 +111,7 @@ toAssignment :: Sat2 -> [[Assignment]]
 toAssignment = (map . map) Right
 
 subSat :: Sat2 -> Solution -> [[Assignment]]
-subSat sat2 = foldl subFormula (toAssignment sat2)
+subSat sat2 = foldl' subFormula (toAssignment sat2)
 
 subFormula :: [[Assignment]] -> Int -> [[Assignment]]
 subFormula intro s = (map . map) (`subLiteral` s) intro

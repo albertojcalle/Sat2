@@ -17,7 +17,7 @@ List must be sorted.
 opposite :: (Eq a, Num a) => [a] -> Bool
 opposite ls =  case ls of
     x:y:xs -> (x == negate y && x /= 0) || opposite (y:xs)
-    [x]    -> False
+    [q]    -> False
     []     -> False
 
 {-|
