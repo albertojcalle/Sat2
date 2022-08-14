@@ -21,7 +21,7 @@ I will try to implement APT in Haskell as a usable package since currently there
 
 ##
 
-[criterion benchmark](https://htmlpreview.github.io/?https://github.com/albertojcalle/2sat/blob/main/bench.html)
+[criterion benchmark](https://htmlpreview.github.io/?https://github.com/albertojcalle/2sat/blob/develop/bench.html)
 
 ## TODO list
 
