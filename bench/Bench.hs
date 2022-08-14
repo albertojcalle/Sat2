@@ -4,7 +4,7 @@ import System.Directory ( getCurrentDirectory, getDirectoryContents )
 import Data.Map (valid)
 
 pathExamples :: FilePath
-pathExamples = "/test/Examples/hard"
+pathExamples = "./test/Examples/hard/"
 
 main :: IO()
 main = testBunchFiles
@@ -12,12 +12,13 @@ main = testBunchFiles
 testBunchFiles :: IO ()
 testBunchFiles = do
   path <- getCurrentDirectory
-  allFiles <- getDirectoryContents $  path ++ pathExamples
-  let validFiles = filter (\x -> head x /= '.') allFiles
-  print validFiles
+  allFiles <- getDirectoryContents pathExamples
+  print allFiles
+  let validFiles2 = filter (\x -> head x /= '.') allFiles
+      validFiles = map (pathExamples ++) validFiles2
   defaultMain [
-    bgroup "Solver" [ bench "tarjan"  $ whnf (map tarjanSolvableIO) validFiles
-               , bench "mios"  $ whnf (map miosSolve) validFiles
+    bgroup "Solver" [ bench "tarjan"  $ whnfIO (tarjanSolvableIO (head validFiles))
+               , bench "mios"  $ whnfIO (miosSolve (head validFiles))
                ]
     ]
 

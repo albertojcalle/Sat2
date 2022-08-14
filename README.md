@@ -19,9 +19,14 @@ Many general SAT solvers exist that are not specific to 2-SAT, in many cases imp
 
 I will try to implement APT in Haskell as a usable package since currently there is no implementation in Haskell, as far as I am aware.
 
+##
+
+[criterion benchmark](https://htmlpreview.github.io/?https://github.com/albertojcalle/2sat/blob/main/bench.html)
+
 ## TODO list
 
 - [x] Algorithm implementation.
 - [x] Basic examples.
 - [ ] Property testing.
 - [ ] Benchmark.
+- [ ] Profiling.

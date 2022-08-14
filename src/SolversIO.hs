@@ -2,6 +2,7 @@ module SolversIO
   ( miosSolve,
     tarjanSolve,
     tarjanSolvableIO,
+    miosSolvableIO,
     outputPath,
   )
 where
@@ -57,6 +58,7 @@ isSat2 clauses
   | 2 == maximum (map length clauses) = True
   | otherwise = True
 
+
 miosSolve :: FilePath -> IO SatInfo
 miosSolve file = do
   input <- cnfToSatInfo file
@@ -64,14 +66,18 @@ miosSolve file = do
       nC = nClauses input
       cl = formula input
       description = CNFDescription nV nC file
-  solution <- solveSAT description cl
-  let info = satInfo {formula = cl, solution = solution}
-  return info
+  result <- solveSAT description cl
+  return satInfo { formula = cl
+                     , solution = result
+                     , nVar = nV
+                     , nClauses = nC
+                     , isSolvable = Just $ (not . null) result
+                     }
 
 tarjanSolve :: FilePath -> IO SatInfo
 tarjanSolve file = do
   info <- cnfToSatInfo file
-  return $ solve info
+  return $ Sat.solve info
 
 tarjanSolveIO :: FilePath -> IO ()
 tarjanSolveIO file = do
@@ -81,10 +87,18 @@ tarjanSolveIO file = do
     Just False -> putStrLn $ "Contradiction: " ++ show (contradiction info)
     Nothing -> error "No valid result."
 
-tarjanSolvableIO :: FilePath -> IO()
-tarjanSolvableIO file = do 
-    info <- tarjanSolve file
-    print $ isSolvable info
+solvableIO :: FilePath -> (FilePath -> IO SatInfo) -> IO (Maybe Bool)
+solvableIO file solver = do 
+    info <- solver file
+    return $ isSolvable info
+
+tarjanSolvableIO :: FilePath -> IO (Maybe Bool)
+tarjanSolvableIO file = solvableIO file tarjanSolve
+
+miosSolvableIO :: FilePath -> IO (Maybe Bool)
+miosSolvableIO file = solvableIO file miosSolve
+
+
 
 
 {-| Checks if file is solvable or not and moves to corresponding directories:
