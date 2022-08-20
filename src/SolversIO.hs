@@ -1,38 +1,32 @@
 module SolversIO
-  ( miosSolve,
+  ( 
+    cnfToSatInfo,
+    readExamples,
+    listCNF,
     tarjanSolve,
+    miosSolve,
     tarjanSolvableIO,
-    miosSolvableIO,
-    outputPath,
+    miosSolvableIO
   )
 where
 
-import Control.Monad (filterM)
-import Data.List ()
-import GHC.Base (IO (IO))
-import GHC.Float (float2Int, int2Float)
+import System.Directory
+    ( doesFileExist, getDirectoryContents, setCurrentDirectory, makeAbsolute )
+import Control.Monad (filterM, forM)
+
+
+
 import SAT.Mios (CNFDescription (CNFDescription), solveSAT)
 import SAT.Mios.Util.DIMACS (fromFile)
 import Sat (solve)
-import SatGenerator (write2Sat)
 import SatTypes
-import System.Directory
-  ( doesFileExist,
-    getCurrentDirectory,
-    getDirectoryContents,
-    listDirectory,
-    renameFile,
-    setCurrentDirectory,
-  )
-import System.FilePath.Posix (makeRelative)
-import System.IO (FilePath)
-import System.TimeIt ()
+    ( satInfo,
+      SatInfo(maxLiteral, formula, nVar, nClauses, solution,
+              contradiction, isSolvable) )
+import Common (subG)
 
-outputPath :: FilePath
-outputPath = "/home/alberto/github/2sat/test/Examples/SatGenerator/"
-
-
-{-| Basic converter of a cnf file to internal module type. Does not solve the formula. Checks if given information is coherent. -}
+{-| 
+Basic converter of a cnf file to internal module type. Does not solve the formula. Checks if given information is coherent. -}
 cnfToSatInfo :: FilePath -> IO SatInfo
 cnfToSatInfo file =
   do
@@ -54,7 +48,7 @@ Check if there are two literals in each clause.
 TODO: add warning when ther are less than 2 literals -}
 isSat2 :: Foldable t => [t a] -> Bool
 isSat2 clauses
-  | 1 == minimum (map length clauses) = error "hola"
+  | 1 == minimum (map length clauses) = error "Less than 2 literals."
   | 2 == maximum (map length clauses) = True
   | otherwise = True
 
@@ -88,9 +82,18 @@ tarjanSolveIO file = do
     Nothing -> error "No valid result."
 
 solvableIO :: FilePath -> (FilePath -> IO SatInfo) -> IO (Maybe Bool)
-solvableIO file solver = do 
+solvableIO file solver = do
     info <- solver file
     return $ isSolvable info
+
+solvable :: SatInfo -> (SatInfo -> SatInfo) -> Maybe Bool
+solvable info solver = isSolvable (solver info)
+
+tarjanSolvable :: SatInfo -> Maybe Bool
+tarjanSolvable info = solvable info Sat.solve
+
+{- miosSolvable :: SatInfo -> Maybe Bool
+miosSolvable info = solvable info miosSolve -}
 
 tarjanSolvableIO :: FilePath -> IO (Maybe Bool)
 tarjanSolvableIO file = solvableIO file tarjanSolve
@@ -98,47 +101,15 @@ tarjanSolvableIO file = solvableIO file tarjanSolve
 miosSolvableIO :: FilePath -> IO (Maybe Bool)
 miosSolvableIO file = solvableIO file miosSolve
 
+readExamples :: FilePath -> IO [SatInfo]
+readExamples path = do
+      setCurrentDirectory path
+      paths <- getDirectoryContents "."
+      files <- filterM doesFileExist paths
+      forM files cnfToSatInfo
 
-
-
-{-| Checks if file is solvable or not and moves to corresponding directories:
-    - SAT/UNSAT
-    - execution time: 1,2,5,10 ...
-Adds comment in DIMACS format. -}
-splitSatIO :: FilePath -> IO ()
-splitSatIO file = do
-  solution <- solution <$> miosSolve file
-  let solvable = not $ null solution
-  let output =
-        if solvable
-          then "./SAT/" ++ file
-          else "./UNSAT/" ++ file
-  renameFile file output
-
-classify :: FilePath -> IO ()
-classify path = do
-  setCurrentDirectory path
-  paths <- getDirectoryContents path
-  files <- filterM doesFileExist paths
-  mapM_ splitSatIO files
-
-generatorMain :: Int -> Int -> IO ()
-generatorMain clauses n = do
-  setCurrentDirectory outputPath
-  mapM_ funct vars
-  paths <- getDirectoryContents "."
-  files <- filterM doesFileExist paths
-  mapM_ splitSatIO files
-  where
-    x = GHC.Float.int2Float clauses
-    suelo = floor (x * 0.9)
-    techo = ceiling (x * 1.1)
-    space = 5 * (10 ^ float2Int (logBase 10 (1000 :: Float) -2))
-    vars = [suelo, (suelo + space) .. techo]
-    funct y = write2Sat outputPath n y clauses
-
-
-
--- |
--- TODO: Add c comment with solvable max variable, time of execution etc.
-addInfoCnf = undefined
+listCNF :: FilePath -> IO [FilePath]
+listCNF path = do
+      paths <- getDirectoryContents path
+      let onlyCNF = filter (\x ->  ".cnf" == subG (-4) (-1) x)
+      return $ map (path ++) (onlyCNF paths)

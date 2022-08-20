@@ -2,12 +2,14 @@
 module Common (
     opposite,
     areConnected,
-    buildEdge
+    buildEdge,
+    sub,
+    subG
 ) where
 
 import Data.Graph ( path, Graph )
 import SatTypes ( Scc )
-
+import Data.List
 
 
 {-|
@@ -36,3 +38,12 @@ buildEdge g (x,xs) (y,ys) = [(x,y) | x /= y, areConnected g xs ys]
 isSolution :: [a] -> Bool
 isSolution [] = False
 isSolution _ =  True
+
+sub :: Int -> Int -> String -> String
+sub start end s = take (end-start+1) ( drop (start-1) s )
+
+subG :: Int -> Int -> String -> String
+subG start end word
+  | start < 0 && end < 0  = sub (l + start + 1) (l + end + 1) word
+  | otherwise = sub start end word
+  where l = length word

@@ -31,7 +31,6 @@ dependencies:
 - QuickCheck
 - hspec
 - timeit
-#- gtk
 
 library:
   source-dirs: src
@@ -70,6 +69,6 @@ benchmarks:
     dependencies:
       - criterion
       - 2sat
-    benchmark-arguments: 
-    - -output bench.html
+#    benchmark-arguments: 
+#    - -output bench.html
 #stack bench --benchmark-arguments "--output bench.html"
