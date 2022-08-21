@@ -98,14 +98,16 @@ Checks if a solution is correct for a given Sat formula.
 
 type Assignment = Either Bool Int
 
+
+{- 
+TODO: this is very slow
+ -}
 checkSolution :: SatInfo -> Bool
 checkSolution info =
     let
         result = subSat (formula info) (solution info)
         isCorrect = all (all isLeft) result
     in isCorrect
-
-
 
 toAssignment :: Sat2 -> [[Assignment]]
 toAssignment = (map . map) Right
