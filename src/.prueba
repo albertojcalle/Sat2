@@ -1,0 +1,10 @@
+ruta =  "./test/Examples/safe/2sat-8000c-7200l-10.cnf"
+info <- cnfToSatInfo ruta
+
+info1 = (sat2ToGraph) info
+
+info2 = (findEquivalences . sat2ToGraph) info
+info3 = (condensate . findEquivalences . sat2ToGraph) info
+info4 = (setValues . condensate . findEquivalences . sat2ToGraph) info
+
+result = (setValues . condensate . findEquivalences . sat2ToGraph) info

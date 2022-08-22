@@ -14,15 +14,12 @@ import System.Directory
     ( doesFileExist, getDirectoryContents, setCurrentDirectory, makeAbsolute )
 import Control.Monad (filterM, forM)
 
-
-
 import SAT.Mios (CNFDescription (CNFDescription), solveSAT)
 import SAT.Mios.Util.DIMACS (fromFile)
 import Sat (solve)
 import SatTypes
     ( satInfo,
-      SatInfo(maxLiteral, formula, nVar, nClauses, solution,
-              contradiction, isSolvable) )
+      SatInfo(..) )
 import Common (subG)
 
 {-| 
@@ -35,13 +32,15 @@ cnfToSatInfo file =
       Nothing -> error $ "Bad cnf file at path" ++ file
       Just tuple -> do
         let ((nVar, nClauses), clauses) = tuple
-            maxLiteral = maximum $ maximum clauses
-        if isSat2 clauses
-          then return satInfo { formula = clauses
-                              , nVar = nVar
-                              , nClauses = nClauses
-                              , maxLiteral = maxLiteral}
-          else error $ "Input cnf is not sat2 formula at path" ++ file
+            maxL = (abs . maximum . map maximum) clauses
+            minL = (abs . minimum . map minimum) clauses
+            bound = max maxL minL
+        if bound /= nVar then error "Incorrect number of variables in file." else
+          if isSat2 clauses
+            then return satInfo { formula = clauses
+                                , nVar = nVar
+                                , nClauses = nClauses}
+            else error $ "Input cnf is not sat2 formula at path" ++ file
 
 {-|
 Check if there are two literals in each clause.

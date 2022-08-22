@@ -1,5 +1,5 @@
 module Sat
-    (
+{-     (
     SatInfo,
     Sat2,
     solution,
@@ -8,8 +8,13 @@ module Sat
     subSat,
     subFormula,
     subLiteral,
-    solve
-    ) where
+    solve,
+
+    getComponents,
+    collapseSolution,
+    condensate
+    )  -}
+    where
 
 import Data.Graph ( buildG, path, scc, Edge, Graph, components )
 import Data.Tree ( flatten, drawForest )
@@ -20,8 +25,7 @@ import SatTypes
     ( Scc,
       Sat2,
       Solution,
-      SatInfo(equivalences, contradiction, isSolvable, maxLiteral, graph,
-              formula, solution))
+      SatInfo(..))
 import GHC.Base (VecElem(Int16ElemRep))
 import Data.Either (isLeft)
 
@@ -33,14 +37,17 @@ Supposedly scc uses Tarjan's algorithm, so the output is in reverse topological 
 -}
 solve :: SatInfo -> SatInfo
 solve info =
-    let
-        sccS = getComponents info
-        info2 = (sat2ToGraph info) {
-            equivalences = zip ([1..] :: [Int]) sccS}
-        result = (setValues . condensate) info2
+    let result = (condensate . findEquivalences . sat2ToGraph) info
     in case isSolvable result of
-        Just _ -> result
+        Just True -> setValues result
+        Just False -> result
         Nothing -> error "Condensation does not return a valid result."
+        
+{- 
+TODO: change to Integral
+-}
+findEquivalences :: SatInfo -> SatInfo
+findEquivalences info = info { equivalences = zip ([1..] :: [Int]) (getComponents info)} 
 
 getComponents :: SatInfo -> [Scc]
 getComponents info = map (sort . flatten) $ scc (graph info)
@@ -74,7 +81,7 @@ condensate info =
         firstContradiction = dropWhile (not . opposite) sccS
         satGraph = [graph info]
         newEdges =  concat $ buildEdge <$> satGraph  <*> equivalences2 <*> equivalences2
-        newGraph = buildG (1, maxLiteral info) newEdges
+        newGraph = buildG (1, nVar info) newEdges
     in case firstContradiction of
         [] -> info{graph = newGraph, isSolvable = Just True}
         c:_  -> info{contradiction = c, isSolvable = Just False}
@@ -82,15 +89,12 @@ condensate info =
 {-|
 Auxiliar function for reading formulas as lists.
 -}
---sat2ToGraph :: Sat2 -> ((Int,Int), Graph)
 sat2ToGraph :: SatInfo -> SatInfo
 sat2ToGraph info =
     let
         vertList = concatMap (\[x,y]-> [(-x,y),(-y,x)]) (formula info)
-        uppBound = maxLiteral info
-        lowBound = -uppBound
-        bounds = (lowBound, uppBound)
-    in info{graph = buildG bounds vertList}
+        bound = nVar info
+    in info{graph = buildG (negate bound, bound) vertList}
 
 {-|
 Checks if a solution is correct for a given Sat formula.

@@ -20,7 +20,6 @@ data SatInfo = SatInfo {
     ,contradiction :: Contradiction
     ,graph :: Graph
     ,equivalences :: [Equivalence]
-    ,maxLiteral :: Int
     ,nVar :: Int
     ,nClauses :: Int
     ,isSolvable :: Maybe Bool
@@ -35,7 +34,6 @@ satInfo = SatInfo{
     ,contradiction = []
     ,graph = buildG (0,0) []
     ,equivalences = []
-    ,maxLiteral = 0
     ,nVar = 0
     ,nClauses = 0
     ,isSolvable = Nothing

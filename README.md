@@ -27,6 +27,6 @@ I will try to implement APT in Haskell as a usable package since currently there
 
 - [x] Algorithm implementation.
 - [x] Basic examples.
-- [ ] Property testing.
+- [x] Property testing.
 - [ ] Benchmark.
 - [ ] Profiling.
