@@ -4,7 +4,7 @@ import System.Directory ( getCurrentDirectory, getDirectoryContents )
 import Data.Map (valid)
 
 pathExamples :: FilePath
-pathExamples = "./test/Examples/hard/"
+pathExamples = "./test/Examples/safe/"
 
 main :: IO()
 main = testBunchFiles
