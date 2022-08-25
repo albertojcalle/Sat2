@@ -1,3 +1,3 @@
-# Changelog for 2sat
+# Changelog for Sat2
 
 ## Unreleased changes

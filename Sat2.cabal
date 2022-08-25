@@ -4,15 +4,15 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 
-name:           2sat
+name:           Sat2
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/albertojcalle/2sat#readme>
-homepage:       https://github.com/albertojcalle/2sat#readme
-bug-reports:    https://github.com/albertojcalle/2sat/issues
+description:    Please see the README on GitHub at <https://github.com/albertojcalle/Sat2#readme>
+homepage:       https://github.com/albertojcalle/Sat2#readme
+bug-reports:    https://github.com/albertojcalle/Sat2/issues
 author:         Alberto J Calle Martinez
 maintainer:     48741642+albertojcalle@users.noreply.github.com
 copyright:      2021 Alberto J Calle Martinez
-license:        GPL-3.0
+license:        GPL-3
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -21,7 +21,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/albertojcalle/2sat
+  location: https://github.com/albertojcalle/Sat2
 
 library
   exposed-modules:
@@ -32,7 +32,7 @@ library
       SatTypes
       SolversIO
   other-modules:
-      Paths_2sat
+      Paths_Sat2
   hs-source-dirs:
       src
   build-depends:
@@ -48,15 +48,15 @@ library
     , timeit
   default-language: Haskell2010
 
-executable 2sat-exe
+executable Sat2-exe
   main-is: Main.hs
   hs-source-dirs:
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      2sat
-    , MonadRandom
+      MonadRandom
     , QuickCheck
+    , Sat2
     , base >=4.7 && <5
     , containers
     , directory
@@ -67,21 +67,21 @@ executable 2sat-exe
     , timeit
   default-language: Haskell2010
 
-test-suite 2sat-test
+test-suite Sat2-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
       SpecCommon
       SpecSat
       SpecSolversIO
-      Paths_2sat
+      Paths_Sat2
   hs-source-dirs:
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      2sat
-    , MonadRandom
+      MonadRandom
     , QuickCheck
+    , Sat2
     , base >=4.7 && <5
     , containers
     , directory
@@ -92,18 +92,18 @@ test-suite 2sat-test
     , timeit
   default-language: Haskell2010
 
-benchmark 2sat-bench
+benchmark Sat2-bench
   type: exitcode-stdio-1.0
   main-is: Bench.hs
   other-modules:
-      Paths_2sat
+      Paths_Sat2
   hs-source-dirs:
       bench
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      2sat
-    , MonadRandom
+      MonadRandom
     , QuickCheck
+    , Sat2
     , base >=4.7 && <5
     , containers
     , criterion

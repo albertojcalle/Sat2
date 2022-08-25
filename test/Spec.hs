@@ -1,4 +1,3 @@
-
 import SpecSolversIO (spec_tarjanSolveIO)
 import SpecSat ( spec_tarjanSolve )
 import Test.Hspec ( hspec )

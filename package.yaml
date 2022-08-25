@@ -1,7 +1,7 @@
-name:                2sat
+name:                Sat2
 version:             0.1.0.0
-github:              "albertojcalle/2sat"
-license:             GPL-3.0
+github:              "albertojcalle/Sat2"
+license:             GPL-3
 author:              "Alberto J Calle Martinez"
 maintainer:          "48741642+albertojcalle@users.noreply.github.com"
 copyright:           "2021 Alberto J Calle Martinez"
@@ -17,7 +17,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/albertojcalle/2sat#readme>
+description:         Please see the README on GitHub at <https://github.com/albertojcalle/Sat2#readme>
 
 dependencies:
 - base >= 4.7 && < 5
@@ -36,7 +36,7 @@ library:
   source-dirs: src
 
 executables:
-  2sat-exe:
+  Sat2-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -44,12 +44,12 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - 2sat
+    - Sat2
     when:
     - condition: false
-      other-modules: Paths_2sat
+      other-modules: Paths_Sat2
 tests:
-  2sat-test:
+  Sat2-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -57,9 +57,9 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - 2sat
+    - Sat2
 benchmarks:
-  2sat-bench:
+  Sat2-bench:
     main: Bench.hs
     source-dirs: bench
     ghc-options:
@@ -68,7 +68,7 @@ benchmarks:
       - -with-rtsopts=-N
     dependencies:
       - criterion
-      - 2sat
+      - Sat2
 #    benchmark-opts:
 #      benchmark-arguments: "--output bench.html"
 #    benchmark-arguments: 
