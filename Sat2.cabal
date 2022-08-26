@@ -6,7 +6,9 @@ cabal-version: 1.12
 
 name:           Sat2
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/albertojcalle/Sat2#readme>
+synopsis:       2 sat linear solver
+description:    2-sat linear time solver implementing the Aspvall, Plass and Tarjan algorithm in Haskell. Please see the README on GitHub at <https://github.com/albertojcalle/Sat2#readme>
+category:       Logic
 homepage:       https://github.com/albertojcalle/Sat2#readme
 bug-reports:    https://github.com/albertojcalle/Sat2/issues
 author:         Alberto J Calle Martinez
@@ -25,12 +27,12 @@ source-repository head
 
 library
   exposed-modules:
-      Common
-      Sat
-      SatGenerator
-      SatGeneratorIO
-      SatTypes
-      SolversIO
+      Sat2.Common
+      Sat2.Sat
+      Sat2.SatGenerator
+      Sat2.SatGeneratorIO
+      Sat2.SatTypes
+      Sat2.SolversIO
   other-modules:
       Paths_Sat2
   hs-source-dirs:

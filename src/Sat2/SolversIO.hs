@@ -1,4 +1,4 @@
-module SolversIO
+module Sat2.SolversIO
   ( 
     cnfToSatInfo,
     readExamples,
@@ -16,11 +16,11 @@ import Control.Monad (filterM, forM)
 
 import SAT.Mios (CNFDescription (CNFDescription), solveSAT)
 import SAT.Mios.Util.DIMACS (fromFile)
-import Sat (solve)
-import SatTypes
+import Sat2.Sat (solve)
+import Sat2.SatTypes
     ( satInfo,
       SatInfo(..) )
-import Common (subG)
+import Sat2.Common (subG)
 
 {-| 
 Basic converter of a cnf file to internal module type. Does not solve the formula. Checks if given information is coherent. -}
@@ -70,7 +70,7 @@ miosSolve file = do
 tarjanSolve :: FilePath -> IO SatInfo
 tarjanSolve file = do
   info <- cnfToSatInfo file
-  return $ Sat.solve info
+  return $ Sat2.Sat.solve info
 
 tarjanSolveIO :: FilePath -> IO ()
 tarjanSolveIO file = do
@@ -89,7 +89,7 @@ solvable :: SatInfo -> (SatInfo -> SatInfo) -> Maybe Bool
 solvable info solver = isSolvable (solver info)
 
 tarjanSolvable :: SatInfo -> Maybe Bool
-tarjanSolvable info = solvable info Sat.solve
+tarjanSolvable info = solvable info Sat2.Sat.solve
 
 {- miosSolvable :: SatInfo -> Maybe Bool
 miosSolvable info = solvable info miosSolve -}

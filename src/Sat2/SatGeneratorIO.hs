@@ -1,4 +1,4 @@
-module SatGeneratorIO (
+module Sat2.SatGeneratorIO (
   generatorMain,
 
 )where
@@ -13,9 +13,9 @@ import System.Directory
   )
 import System.FilePath.Posix (makeRelative)
 import System.IO (FilePath)
-import SatGenerator (writeKSat)
-import SatTypes ( SatInfo(solution) )
-import SolversIO ( miosSolve )
+import Sat2.SatGenerator (writeKSat)
+import Sat2.SatTypes ( SatInfo(solution) )
+import Sat2.SolversIO ( miosSolve )
 import GHC.Float (float2Int, int2Float)
 import Control.Monad (filterM)
 

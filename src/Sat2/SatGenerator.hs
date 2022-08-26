@@ -1,9 +1,9 @@
-module SatGenerator (
+module Sat2.SatGenerator (
     writeKSat,
     evalKSat
 ) where
 
-import SatTypes ( Sat2, Lit )
+import Sat2.SatTypes ( Sat2, Lit )
 import SAT.Mios.Util.DIMACS ( toFile)
 import Control.Monad.Random (Rand, StdGen, evalRand, evalRandIO, mkStdGen, uniform, replicateM_)
 import Control.Monad ( replicateM, zipWithM_ ) 

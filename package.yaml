@@ -11,13 +11,13 @@ extra-source-files:
 - ChangeLog.md
 
 # Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
+synopsis:  2 sat linear solver
+category:  Logic
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/albertojcalle/Sat2#readme>
+description: 2-sat linear time solver implementing the Aspvall, Plass and Tarjan algorithm in Haskell. Please see the README on GitHub at <https://github.com/albertojcalle/Sat2#readme>
 
 dependencies:
 - base >= 4.7 && < 5

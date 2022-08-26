@@ -1,4 +1,4 @@
-module Sat
+module Sat2.Sat
 {-     (
     SatInfo,
     Sat2,
@@ -20,8 +20,8 @@ import Data.Graph ( buildG, path, scc, Edge, Graph, components )
 import Data.Tree ( flatten, drawForest )
 import Data.List ( sort, union, foldl')
 import Data.List.Extra (disjoint)
-import Common ( buildEdge, opposite )
-import SatTypes
+import Sat2.Common ( buildEdge, opposite )
+import Sat2.SatTypes
     ( Scc,
       Sat2,
       Solution,

@@ -1,5 +1,5 @@
 -- Module accesible from every other source file.
-module Common (
+module Sat2.Common (
     opposite,
     areConnected,
     buildEdge,
@@ -8,7 +8,7 @@ module Common (
 ) where
 
 import Data.Graph ( path, Graph )
-import SatTypes ( Scc )
+import Sat2.SatTypes ( Scc )
 import Data.List
 
 

@@ -1,4 +1,4 @@
-module SatTypes (
+module Sat2.SatTypes (
     SatInfo (..),
     satInfo,
     Lit,
