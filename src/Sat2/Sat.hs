@@ -46,6 +46,7 @@ solve info =
 {- 
 TODO: change to Integral
 -}
+
 findEquivalences :: SatInfo -> SatInfo
 findEquivalences info = info { equivalences = zip ([1..] :: [Int]) (getComponents info)} 
 

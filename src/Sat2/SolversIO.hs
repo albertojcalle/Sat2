@@ -5,6 +5,7 @@ module Sat2.SolversIO
     listCNF,
     tarjanSolve,
     miosSolve,
+    tarjanSolveIO,
     tarjanSolvableIO,
     miosSolvableIO
   )

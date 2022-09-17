@@ -20,7 +20,7 @@ import GHC.Float (float2Int, int2Float)
 import Control.Monad (filterM)
 
 {-|
-Generates randomly with a preset seed some DIMACS CNF files. Then checks if file is solvable or not and moves to corresponding directories:
+Generates randomly with a preset seed (2022) some DIMACS CNF files. Then checks if file is solvable or not and moves to corresponding directories:
     - SAT/UNSAT
     - writes execution time: 1,2,5,10 of mios algorithm
     - comments if formula is solvable
@@ -37,9 +37,9 @@ generatorMain path k n clauses = do
     clausesF = GHC.Float.int2Float clauses
     suelo = floor (clausesF * 0.9)
     techo = ceiling (clausesF * 1.1)
-    space = 5 * (10 ^ float2Int (logBase 10 (1000 :: Float) -2))
+    space = 5 * (10 ^ float2Int (logBase 10 (int2Float clauses) -2))
     vars = [suelo, (suelo + space) .. techo]
-    funct y = writeKSat path 2 n y clauses
+    funct y = writeKSat path k n y clauses
 
 splitSatIO :: FilePath -> IO ()
 splitSatIO file = do

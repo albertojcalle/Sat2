@@ -2,7 +2,7 @@ module SpecSolversIO (
   spec_tarjanSolveIO
 ) where
 
-import SolversIO ( miosSolvableIO, tarjanSolvableIO)
+import Sat2.SolversIO ( miosSolvableIO, tarjanSolvableIO)
 import Test.Hspec ( describe, it, shouldReturn, SpecWith, around, runIO )
 import Control.Monad ( forM_ )
 import Text.Printf (printf)

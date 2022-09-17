@@ -3,7 +3,7 @@ module Sat2.SatGenerator (
     evalKSat
 ) where
 
-import Sat2.SatTypes ( Sat2, Lit )
+import Sat2.SatTypes (Sat, Sat2, Lit )
 import SAT.Mios.Util.DIMACS ( toFile)
 import Control.Monad.Random (Rand, StdGen, evalRand, evalRandIO, mkStdGen, uniform, replicateM_)
 import Control.Monad ( replicateM, zipWithM_ ) 
@@ -14,17 +14,17 @@ type Cloud = Rand StdGen
 writeKSat :: FilePath -> Int -> Int -> Int -> Int -> IO ()
 writeKSat path k n vars clauses = zipWithM_ toFile paths satList
     where
-        satList = evalKSat 2 2022 n vars clauses
-        paths =  map makePath [1..n]
-        makePath x = printf "%s/%dsat-%dc-%dl-%d.cnf" path  k clauses vars  x
+        satList = evalKSat k 2022 n vars clauses
+        makePath x = printf "%s/%dsat-%dc-%dl-%d.cnf" path k clauses vars  x
+        paths = map makePath [1..n]
 
-evalKSat :: Int -> Int -> Int -> Int -> Int -> [Sat2]
+evalKSat :: Int -> Int -> Int -> Int -> Int -> [Sat]
 evalKSat k seed n vars clauses = evalRand (genSatList n) (mkStdGen seed)
     where
-        genSatList :: Int -> Cloud [Sat2]
+        genSatList :: Int -> Cloud [Sat]
         genSatList n = replicateM n $ genKSat k vars clauses
 
-genKSat :: Int -> Int -> Int -> Cloud Sat2
+genKSat :: Int -> Int -> Int -> Cloud Sat
 genKSat k vars clauses = replicateM clauses $ genClause k
     where
         genClause :: Int -> Cloud [Lit]
