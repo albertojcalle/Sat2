@@ -15,8 +15,8 @@ writeKSat :: FilePath -> Int -> Int -> Int -> Int -> IO ()
 writeKSat path k n vars clauses = zipWithM_ toFile paths satList
     where
         satList = evalKSat k 2022 n vars clauses
-        makePath x = printf "%s/%dsat-%dc-%dl-%d.cnf" path k clauses vars  x
-        paths = map makePath [1..n]
+        makePath x = printf "./%dsat-%dc-%dl-%d.cnf" k clauses vars  x
+        paths = map makePath [1..n] :: [String]
 
 evalKSat :: Int -> Int -> Int -> Int -> Int -> [Sat]
 evalKSat k seed n vars clauses = evalRand (genSatList n) (mkStdGen seed)
