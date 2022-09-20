@@ -15,7 +15,7 @@ import System.FilePath.Posix (makeRelative)
 import System.IO (FilePath)
 import Sat2.SatGenerator (writeKSat)
 import Sat2.SatTypes ( SatInfo(solution) )
-import Sat2.SolversIO ( miosSolve )
+import Sat2.SolversIO ( miosSolve)
 import GHC.Float (float2Int, int2Float)
 import Control.Monad (filterM)
 
@@ -35,10 +35,11 @@ generatorMain path k n clauses = do
   where
     --NOTE: this is done only to have a good ratio of SAT/UNSAT problems 
     clausesF = GHC.Float.int2Float clauses
-    suelo = floor (clausesF * 0.9)
-    techo = ceiling (clausesF * 1.1)
-    space = 5 * (10 ^ float2Int (logBase 10 (int2Float clauses) -2))
-    vars = [suelo, (suelo + space) .. techo]
+    coefficient = if k == 2 then (0.9, 1.1) else (0.1, 0.35)
+    floorVar = floor (clausesF * fst coefficient)
+    ceilingVar = ceiling (clausesF * snd coefficient)
+    space = 2 * (10 ^ float2Int (logBase 10 (int2Float clauses) -2))
+    vars = [floorVar, (floorVar + space) .. ceilingVar]
     funct y = writeKSat path k n y clauses
 
 splitSatIO :: FilePath -> IO ()
