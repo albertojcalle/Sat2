@@ -12,7 +12,7 @@ import System.Directory
     setCurrentDirectory,
   )
 import System.FilePath.Posix (makeRelative)
-import System.IO (FilePath)
+import System.IO(FilePath)
 import Sat2.SatGenerator (writeKSat)
 import Sat2.SatTypes ( SatInfo(solution) )
 import Sat2.SolversIO ( miosSolve)

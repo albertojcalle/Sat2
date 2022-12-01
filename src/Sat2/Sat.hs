@@ -1,5 +1,5 @@
 module Sat2.Sat
-{-     (
+     (
     SatInfo,
     Sat2,
     solution,
@@ -9,11 +9,11 @@ module Sat2.Sat
     subFormula,
     subLiteral,
     solve,
-
     getComponents,
     collapseSolution,
-    condensate
-    )  -}
+    condensate,
+    sat2ToGraph
+    )
     where
 
 import Data.Graph ( buildG, path, scc, Edge, Graph, components )
@@ -81,19 +81,19 @@ condensate info =
         sccS = map snd equivalences2
         firstContradiction = dropWhile (not . opposite) sccS
         satGraph = [graph info]
-        newEdges =  concat $ buildEdge <$> satGraph  <*> equivalences2 <*> equivalences2
+        newEdges =  concat $ buildEdge <$> satGraph <*> equivalences2 <*> equivalences2
         newGraph = buildG (1, nVar info) newEdges
     in case firstContradiction of
         [] -> info{graph = newGraph, isSolvable = Just True}
         c:_  -> info{contradiction = c, isSolvable = Just False}
 
 {-|
-Auxiliar function for reading formulas as lists.
+Convert sat2 formula to scc graph.
 -}
 sat2ToGraph :: SatInfo -> SatInfo
 sat2ToGraph info =
     let
-        vertList = concatMap (\[x,y]-> [(-x,y),(-y,x)]) (formula info)
+        vertList = concatMap (\[x,y]-> [(negate x,y),(negate y,x)]) (formula info)
         bound = nVar info
     in info{graph = buildG (negate bound, bound) vertList}
 
