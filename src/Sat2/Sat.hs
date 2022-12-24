@@ -4,10 +4,6 @@ module Sat2.Sat
     Sat2,
     solution,
     checkSolution,
-    toAssignment,
-    subSat,
-    subFormula,
-    subLiteral,
     solve,
     getComponents,
     collapseSolution,
@@ -26,7 +22,7 @@ import Sat2.SatTypes
       Sat2,
       Solution,
       SatInfo(..))
-import GHC.Base (VecElem(Int16ElemRep))
+
 import Data.Either (isLeft)
 
 
@@ -42,13 +38,13 @@ solve info =
         Just True -> setValues result
         Just False -> result
         Nothing -> error "Condensation does not return a valid result."
-        
+
 {- 
 TODO: change to Integral
 -}
 
 findEquivalences :: SatInfo -> SatInfo
-findEquivalences info = info { equivalences = zip ([1..] :: [Int]) (getComponents info)} 
+findEquivalences info = info { equivalences = zip ([1..] :: [Int]) (getComponents info)}
 
 getComponents :: SatInfo -> [Scc]
 getComponents info = map (sort . flatten) $ scc (graph info)
@@ -108,25 +104,12 @@ type Assignment = Either Bool Int
 TODO: this is very slow
  -}
 checkSolution :: SatInfo -> Bool
-checkSolution info =
-    let
-        result = subSat (formula info) (solution info)
-        isCorrect = all (all isLeft) result
-    in isCorrect
+checkSolution info = subSat (solution info) (formula info)
 
-toAssignment :: Sat2 -> [[Assignment]]
-toAssignment = (map . map) Right
+subSat :: Eq a => [a] -> [[a]] -> Bool
+subSat _ [] = True
+subSat [] f = null (concat f)
+subSat (l:ls) f = subSat ls $ subLit l f
 
-subSat :: Sat2 -> Solution -> [[Assignment]]
-subSat sat2 = foldl' subFormula (toAssignment sat2)
-
-subFormula :: [[Assignment]] -> Int -> [[Assignment]]
-subFormula intro s = (map . map) (`subLiteral` s) intro
-
-subLiteral :: Assignment -> Int -> Assignment
-subLiteral lit s = case lit of
-    Left lit -> Left lit
-    Right lit -> case () of
-        ()| lit == s -> Left True
-          | lit == negate s -> Left False
-          | otherwise -> Right lit
+subLit :: (Eq a) => a -> [[a]] -> [[a]]
+subLit l = filter (l `notElem`)
