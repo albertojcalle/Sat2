@@ -1,7 +1,43 @@
-ruta =  "./test/Examples/safe/2sat-8000c-7200l-10.cnf"
-info <- cnfToSatInfo ruta
+:q
+stack ghci
 
-info1 = (sat2ToGraph) info
+import Data.List (partition)
+import Data.Graph
+ruta =  "./test/Examples/safe/2sat-100c-90l-1.cnf"
+info <- cnfToSatInfo ruta
+info2 = (subEquivalences . findEquivalences. infoAddGraph) info
+
+a = graph $ (condensate . subEquivalences . findEquivalences . infoAddGraph) info
+
+TODO: no se pueden reusar los números de las Componentes
+TODO: aplanar árbol de componentes
+
+
+rF = reducedFormula info2
+singles = filter (\x -> 1 == length x) rF
+eq = equivalences info2
+
+(singles, rF2) = partition isDefiniteClause rF
+
+rF2 =[[-75,-89],[-35,-80],[-57,-54],[-43,68],[-42,20],[-33,-88],[26,-28],[-2,-41],[-39,25],[-5,83],[-87,77],[79,69],[27,-30],[-28,-16],[28,13],[-42,21],[-5,10],[-33,-4],[-17,-62],[-15,-4],[-28,48],[-39,-79],[-80,58],[26,54],[1,-15],[58,2],[-55,-19],[47,-81],[32,13],[39,90],[38,-57],[12,-20],[53,26],[61,-68],[-78,-80],[-81,-35],[16,46],[31,36],[-21,71],[-2,-40],[-56,15],[-37,77],[-3,-60],[-16,-82],[-17,15],[-89,-81],[39,1],[22,-1],[40,16],[62,-29],[52,19],[-15,-56],[-20,-50]]
+
+--addValueList' (concat singles, TRUE) 
+addSatToSolutionTree rF2 emptySolution
+Just sT = addValueList' (concat singles, TRUE) emptySolution >>= addSatToSolutionTree rF2
+
+
+addClause (Just sT) [39,-26]
+
+import qualified Data.Map as Map
+
+Map.lookup (16) sT
+
+andValue ((snd . intToValue) (-16)) <$> Map.lookup 16 sT
+
+rutaOut =  "./test/Examples/safe/Componentes-2sat-100c-90l-3-hhhh.txt"
+
+writeFile rutaOut (show scc1)
+
 
 info2 = (findEquivalences . sat2ToGraph) info
 info3 = (condensate . findEquivalences . sat2ToGraph) info

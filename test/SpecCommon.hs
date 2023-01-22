@@ -5,7 +5,8 @@ module SpecCommon (
 ) where
 
 import Test.QuickCheck(quickCheck, verbose)
-import Sat2.Common (opposite, areConnected)
+import Sat2.Common (areConnected)
+import Sat2.CommonSat ( opposite )
 import Test.QuickCheck.All (quickCheckAll)
 
 -- Types needed

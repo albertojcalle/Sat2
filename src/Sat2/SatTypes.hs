@@ -6,18 +6,22 @@ module Sat2.SatTypes (
     Sat2,
     Scc,
     Solution,
+    SolutionTree,
+    Value(..),
     Equivalence,
     Contradiction
     ) where
 
-import Data.Graph ( buildG, path, scc, Edge, Graph, components )
-import SAT.Mios.Solver (Solver(nVars))
+import Data.Graph ( Graph, buildG )
+import qualified Data.Map as Map
 {-|
 All the possible information about a 2sat formula.
  -}
 data SatInfo = SatInfo {
     formula :: Sat2
+    ,reducedFormula :: Sat2
     ,solution :: Solution
+    ,solutionTree :: SolutionTree
     ,contradiction :: Contradiction
     ,graph :: Graph
     ,equivalences :: [Equivalence]
@@ -31,7 +35,9 @@ Default record values for empty 2sat formula.
 satInfo :: SatInfo
 satInfo = SatInfo{
     formula = []
+    ,reducedFormula = [] -- to deprecate
     ,solution = []
+    ,solutionTree = Map.empty
     ,contradiction = []
     ,graph = buildG (0,0) []
     ,equivalences = []
@@ -46,6 +52,11 @@ type Sat = [[Int]]
 A positive value corresponds to a true literal, and negative corresponds to false.  
  -}
 type Solution = [Int]
+
+data Value = NONE | TRUE | FALSE | BOTH deriving (Show, Eq)
+
+type SolutionTree = Map.Map Lit Value
+
 {-|
 Variables that are equivalent to other variables on the original 2sat. On a graph they are
 strongly connected components.

@@ -58,9 +58,3 @@ classifyFolder path = do
   paths <- getDirectoryContents path
   files <- filterM doesFileExist paths
   mapM_ splitSatIO files
-
-{- 
-TODO: Add c comment with solvable max variable, time of execution etc.
- -}
--- |
-addInfoCnf = undefined

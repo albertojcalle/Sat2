@@ -28,10 +28,12 @@ source-repository head
 library
   exposed-modules:
       Sat2.Common
+      Sat2.CommonSat
       Sat2.Sat
       Sat2.SatGenerator
       Sat2.SatGeneratorIO
       Sat2.SatTypes
+      Sat2.Solution
       Sat2.SolversIO
   other-modules:
       Paths_Sat2

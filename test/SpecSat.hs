@@ -5,7 +5,7 @@ module SpecSat (
 ) where
 
 import Test.QuickCheck(quickCheck, verbose)
-import Sat2.Sat ( checkSolution )
+import Sat2.Solution (checkSolution)
 import Control.Monad (forM_)
 import Text.Printf (printf)
 import Sat2.SolversIO ( miosSolve, tarjanSolve ) 
