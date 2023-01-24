@@ -1,27 +1,26 @@
-{-# LANGUAGE BangPatterns #-}
 {-|
 Functions over sat formulas. Inputs need to be sorted. 
 -}
 module Sat2.CommonSat
 (sortSat,
     opposite,
-    subEquivalences
+    oppositeRemain
 )
 where
 
 import Data.List ( sortBy, sort, partition )
-import Sat2.SatTypes( SatInfo(..), Scc )
+import Sat2.SatTypes( SatInfo(..))
 import Sat2.Common ( allEqual, isNegative, isPositive, intersects )
 import Data.Graph ( components, Graph, scc, Vertex, Forest )
 import Data.Tree (flatten)
 
 
-setValues :: SatInfo -> SatInfo
+{- setValues :: SatInfo -> SatInfo
 setValues info =
     let ! components = map snd (equivalences info)
         --solution = foldl' collapseSolution [] components
         solutionList = solution info ++ collapse components
-    in info{solution = solutionList}
+    in info{solution = solutionList} -}
 
 {-|
 Collapses all the components in a particular solution.
@@ -40,7 +39,7 @@ collapse (x:xs)
         negCommon = (map negate . concat) common
         (negCommonEnd, negCommonTry) = partition (`elem` x) negCommon
 
-getComponents :: Graph -> [Scc]
+getComponents :: Graph -> [[Int]]
 getComponents g = map (sort . flatten) $ scc g
 
 getScc :: SatInfo -> Forest Vertex
@@ -89,38 +88,17 @@ List must be sorted.
 opposite :: (Eq a, Num a) => [a] -> Bool
 opposite ls =  case ls of
     x:y:xs -> (x == negate y && x /= 0) || opposite (y:xs)
-    [q]    -> False
+    [x]    -> False
     []     -> False
 
-
-{-|
-Substitutes a list of equivalences in a formula for the first literal of the equivalence, also opposites.
-Removes opposite clauses.
-Input:
-    List of equivalences.
-    Sat formula
-Output:
-    Reduced formula that can be used to generate a solution.
--}
-subEquivalences :: SatInfo -> SatInfo
-subEquivalences info = case isSolvable info of
-    Nothing -> error "isSolvable must be known by this point."
-    Just False -> info
-    Just True -> info{
-    reducedFormula = comp
-    , solution = sol
-   {-  ,solutionTree = case sT of
-        Nothing -> error "Formula is solvable but adding values causes a contradiction."
-        Just sT -> sT -}
-        }
-    where
-        comp = map flatten (components $ graph info)
-        comp2 = takeWhile (/=[0]) comp
-        sol = concat comp2 -- TODO: this may be incorrect
-        --rF = removeSatOpps $ map (subClause (equivalences info)) (formula info)
-        -- (singles, rF2) = partition isDefiniteClause rF
-        -- eq = equivalences info
-        -- sT = addValueList (concat singles) emptySolution >>= addSatToSolutionTree rF2 >>= (eq `addComponentToSolutionTree`) 
+oppositeRemain :: (Eq a, Num a) => [a] -> [(a, a)]
+oppositeRemain ls = case ls of
+    x:y:xs ->
+        if x == negate y
+            then (x, y) : oppositeRemain xs
+            else oppositeRemain (y:xs)
+    [x]    -> []
+    []     -> []
 
 
 isDefiniteClause :: Eq a => [a] -> Bool

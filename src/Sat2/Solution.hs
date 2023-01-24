@@ -16,7 +16,7 @@ module Sat2.Solution (
 import SAT.Mios.Criteria ()
 import qualified Data.Map as Map
 import Sat2.SatTypes
-    ( Lit, Sat2, SolutionTree, Value(..), Scc, Equivalence, SatInfo (..), solution )
+    ( Lit, Sat2, SolutionTree, Value(..), SatInfo (..), solution )
 import Sat2.Common ( isNegative, isPositive, intersects )
 import Data.List (foldl')
 import Data.Map (toList)
@@ -90,7 +90,7 @@ intToValue int
     | isNegative int = (abs int, FALSE)
     | otherwise = error "Conversion error intToValue."
 
-addEqToSolutionTree :: SolutionTree -> Equivalence -> Maybe SolutionTree
+addEqToSolutionTree :: SolutionTree -> (Int, [Int]) -> Maybe SolutionTree
 addEqToSolutionTree tree (int, scc) = let
         valueTree = Map.lookup int tree
     in case valueTree of
@@ -98,7 +98,7 @@ addEqToSolutionTree tree (int, scc) = let
         Just valueTree -> addValueList' (scc, valueTree) tree
         Nothing -> addValueList' (scc, BOTH) tree
 
-addComponentToSolutionTree :: [Equivalence] -> SolutionTree -> Maybe SolutionTree
+addComponentToSolutionTree :: [(Int, [Int])] -> SolutionTree -> Maybe SolutionTree
 addComponentToSolutionTree [] tree = Just tree
 addComponentToSolutionTree (e:eq) tree = addEqToSolutionTree tree e >>= addComponentToSolutionTree eq
 

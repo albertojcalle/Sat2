@@ -23,7 +23,7 @@ spec_tarjanSolveIO files =
     forM_ files $ \file -> 
       it (printf "Checks if '%s' is solvable" file) $ do
         solution <- miosSolvableIO file
-        tarjanSolvableIO file  `shouldReturn` solution
+        tarjanSolvableIO file `shouldReturn` solution
 
 
 

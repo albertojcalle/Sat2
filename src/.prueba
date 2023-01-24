@@ -5,7 +5,7 @@ import Data.List (partition)
 import Data.Graph
 ruta =  "./test/Examples/safe/2sat-100c-90l-1.cnf"
 info <- cnfToSatInfo ruta
-info2 = (subEquivalences . findEquivalences. infoAddGraph) info
+info2 = (subEquivalences . findEquivalences . infoAddGraph) info
 
 a = graph $ (condensate . subEquivalences . findEquivalences . infoAddGraph) info
 

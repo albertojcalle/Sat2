@@ -4,11 +4,11 @@ module Sat2.SatTypes (
     Lit,
     Sat,
     Sat2,
-    Scc,
+{-     Scc,
+    Equivalence, -}
     Solution,
     SolutionTree,
     Value(..),
-    Equivalence,
     Contradiction
     ) where
 
@@ -24,7 +24,7 @@ data SatInfo = SatInfo {
     ,solutionTree :: SolutionTree
     ,contradiction :: Contradiction
     ,graph :: Graph
-    ,equivalences :: [Equivalence]
+    ,components :: [[Int]]
     ,nVar :: Int
     ,nClauses :: Int
     ,isSolvable :: Maybe Bool
@@ -40,7 +40,7 @@ satInfo = SatInfo{
     ,solutionTree = Map.empty
     ,contradiction = []
     ,graph = buildG (0,0) []
-    ,equivalences = []
+    ,components = []
     ,nVar = 0
     ,nClauses = 0
     ,isSolvable = Nothing
@@ -57,17 +57,17 @@ data Value = NONE | TRUE | FALSE | BOTH deriving (Show, Eq)
 
 type SolutionTree = Map.Map Lit Value
 
-{-|
+{- {-|
 Variables that are equivalent to other variables on the original 2sat. On a graph they are
 strongly connected components.
 -}
-type Equivalence = (Int, Scc)
+type Equivalence = (Int, Scc) -}
 {-
 The strongly connected component that causes a contradiction. To be used when proof is needed that a formula is unsolvable.
 -}
 type Contradiction = [Int]
 
-{-|
+{- {-|
 Strongly connected component.
 -}
-type Scc = [Int]
+type Scc = [Int] -}

@@ -29,7 +29,6 @@ spec_checkSolution files =
         let solvable = isSolvable info
         return (Just (checkSolution info)) `shouldReturn` solvable
 
-
 {-|
 The solution given by tarjanSolve is checked in the original formula.
  -}
@@ -43,7 +42,7 @@ spec_tarjanSolve files =
         return (Just (checkSolution info)) `shouldReturn` solvable
 
 {-|
-The solution given by tarjanSolve is checked in the original formula.
+The solution given by miosSolve is checked in the original formula.
  -}
 spec_miosSolve :: [FilePath] -> SpecWith ()
 spec_miosSolve files =

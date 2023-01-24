@@ -10,8 +10,10 @@ path = "./test/Examples/safe/"
 main :: IO ()
 main = do
     files <- listCNF path
-    --hspec $ spec_tarjanSolveIO files
-    --hspec $ spec_miosSolve files
+    -- This ones are comparable:
     hspec $ spec_tarjanSolve files
+    --hspec $ spec_miosSolve files
+
+    --hspec $ spec_tarjanSolveIO files
     --hspec $ spec_checkSolution files
     

@@ -1,5 +1,6 @@
 module Sat2.Common (
     areConnected,
+    anyConnectedPair,
     buildEdge,
     intersects,
     subG,
@@ -8,19 +9,22 @@ module Sat2.Common (
     allEqual
 ) where
 
-import Data.Graph ( path, Graph )
-import Sat2.SatTypes ( Scc, Value (..) )
+import Data.Graph ( path, Graph, Vertex )
+import Sat2.SatTypes ( Value (..) )
 
 {-|
 Wether two components xs, ys have connected edges on the original formula graph.
 -}
-areConnected :: Graph -> Scc -> Scc -> Bool
+areConnected :: Graph -> [Int] -> [Int] -> Bool
 areConnected g xs ys = or (path g <$> xs <*> ys)
+
+anyConnectedPair :: Graph -> [[(Vertex, Vertex)]] -> Bool
+anyConnectedPair g =any $ any (uncurry (path g))
 
 {-|
 Look if two components are connected and build the corresponding edge.
 -}
-buildEdge :: Graph -> (Int, Scc) -> (Int, Scc) -> [(Int,Int)]
+buildEdge :: Graph -> (Int, [Int]) -> (Int, [Int]) -> [(Int,Int)]
 buildEdge g (x,xs) (y,ys) = [(x,y) | x /= y, areConnected g xs ys]
 
 intersects :: Eq a => [a] -> [a] -> Bool
@@ -47,5 +51,5 @@ isNegative x = (-1) == signum x
 allEqual :: Eq a => [a] -> Bool
 allEqual [] = True
 allEqual [x] = True
-allEqual (x:y:xs) = (x == y) && allEqual (y:xs)  
+allEqual (x:y:xs) = (x == y) && allEqual (y:xs)
 
