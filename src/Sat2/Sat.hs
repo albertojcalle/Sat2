@@ -9,7 +9,7 @@ import Data.Tree
  ( flatten, drawForest, Tree (subForest) )
 import Data.List ( sort, union, foldl', partition )
 import Data.List.Extra (disjoint)
-import Sat2.Common ( buildEdge, intersects, isPositive, anyConnectedPair)
+import Sat2.Common ( buildEdge, intersects, isPositive, anyConnectedPair, reversePair)
 import Sat2.CommonSat ( sortSat, opposite, oppositeRemain)
 import Sat2.SatTypes
     ( Sat2,
@@ -19,6 +19,7 @@ import Sat2.SatTypes
 import Data.Either (isLeft)
 import qualified Control.Applicative as Map
 import Sat2.Solution (emptySolution, flattenSolution, addSatToSolutionTree)
+
 
 
 {-|
@@ -43,14 +44,14 @@ findComponents info = info{
     , isSolvable = isSolvable}
     where
         comp = map flatten (Graph.components $ graph info)
-        --sccs = filter (not . null . subForest) (scc (graph info))
-        --components = sortSat $ map flatten sccs
-        possibleContradictions = map (oppositeRemain . sort) comp
+        sccs = sortSat $ map flatten $ filter (not . null . subForest) (Graph.scc (graph info))
+        isSolvable = Just $ not (any opposite sccs)
+        {- possibleContradictions = filter (not .null) $ map (oppositeRemain . sort) comp
         isSolvable = case possibleContradictions of
             [] -> Just True
-            c -> if anyConnectedPair (graph info) possibleContradictions
+            c -> if anyConnectedPair (graph info) (possibleContradictions)
                         then Just False
-                        else Just True
+                        else Just True -}
 
 {-         classRepresentatives = map head components :: [Int]
         eq = filter (isPositive . fst) $ zip classRepresentatives components -}

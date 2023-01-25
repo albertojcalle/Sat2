@@ -39,14 +39,13 @@ genKSat k vars clauses =
     where
         genClause :: Int -> Cloud [Lit]
         genClause k = do
-            uniform $ combinations' k [-vars..vars]
-            --replicateM k genLit
-
-        {- genLit :: Cloud Lit
+            --uniform $ combinations k [-vars..vars]
+            replicateM k genLit
+        genLit :: Cloud Lit
         genLit = do
             f <- uniform [1, -1]
             v <- uniform [1..vars]
-            return (f*v) -}
+            return (f*v)
 
 combinations :: (Eq t, Eq a, Num t, Num a) => t -> [a] -> [[a]]
 combinations 0 _ = [[]]

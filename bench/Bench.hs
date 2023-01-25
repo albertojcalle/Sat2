@@ -1,24 +1,24 @@
-import Criterion.Main
-import SolversIO (tarjanSolve, miosSolve, tarjanSolvableIO) 
-import System.Directory ( getCurrentDirectory, getDirectoryContents )
+import Criterion.Main ( bench, bgroup, whnfIO, defaultMain )
+import Sat2.SolversIO (tarjanSolve, miosSolve, tarjanSolvableIO) 
+import System.Directory ( getCurrentDirectory, getDirectoryContents, setCurrentDirectory )
 import Data.Map (valid)
 
 pathExamples :: FilePath
-pathExamples = "./test/Examples/safe/"
+--pathExamples = "./test/Examples/safe/"
+pathExamples = "./test/Examples/reallyHard/"
 
 main :: IO()
-main = testBunchFiles
+main = testBunchFiles pathExamples
 
-testBunchFiles :: IO ()
-testBunchFiles = do
-  path <- getCurrentDirectory
-  allFiles <- getDirectoryContents pathExamples
+testBunchFiles :: FilePath -> IO ()
+testBunchFiles path = do
+  allFiles <- getDirectoryContents path
   print allFiles
-  let validFiles2 = filter (\x -> head x /= '.') allFiles
-      validFiles = map (pathExamples ++) validFiles2
+  let validFiles2 = filter (\x -> head x == '2') allFiles
+      validFiles = map (path ++) validFiles2
   defaultMain [
-    bgroup "Solver" [ bench "tarjan"  $ whnfIO (tarjanSolvableIO (head validFiles))
-               , bench "mios"  $ whnfIO (miosSolve (head validFiles))
+    bgroup "Solver" [ bench "tarjan"  $ whnfIO (mapM tarjanSolvableIO  validFiles)
+               , bench "mios"  $ whnfIO (mapM miosSolve  validFiles)
                ]
     ]
 

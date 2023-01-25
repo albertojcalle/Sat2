@@ -11,9 +11,9 @@ main :: IO ()
 main = do
     files <- listCNF path
     -- This ones are comparable:
-    hspec $ spec_tarjanSolve files
+    --hspec $ spec_tarjanSolve files -- NOTE: flaky test
     --hspec $ spec_miosSolve files
 
-    --hspec $ spec_tarjanSolveIO files
+    hspec $ spec_tarjanSolveIO files
     --hspec $ spec_checkSolution files
     

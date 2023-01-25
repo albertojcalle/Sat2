@@ -1,6 +1,7 @@
 module Sat2.Common (
     areConnected,
     anyConnectedPair,
+    reversePair,
     buildEdge,
     intersects,
     subG,
@@ -19,7 +20,7 @@ areConnected :: Graph -> [Int] -> [Int] -> Bool
 areConnected g xs ys = or (path g <$> xs <*> ys)
 
 anyConnectedPair :: Graph -> [[(Vertex, Vertex)]] -> Bool
-anyConnectedPair g =any $ any (uncurry (path g))
+anyConnectedPair g = any $ any (uncurry (path g))
 
 {-|
 Look if two components are connected and build the corresponding edge.
@@ -53,3 +54,5 @@ allEqual [] = True
 allEqual [x] = True
 allEqual (x:y:xs) = (x == y) && allEqual (y:xs)
 
+reversePair :: (a,a) -> (a,a)
+reversePair (x,y) = (y,x)

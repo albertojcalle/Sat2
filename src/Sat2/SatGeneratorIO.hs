@@ -15,7 +15,7 @@ import System.FilePath.Posix (makeRelative)
 import System.IO(FilePath)
 import Sat2.SatGenerator (writeKSat)
 import Sat2.SatTypes ( SatInfo(solution) )
-import Sat2.SolversIO ( miosSolve)
+import Sat2.SolversIO ( miosSolve, tarjanSolve)
 import GHC.Float (float2Int, int2Float)
 import Control.Monad (filterM)
 
@@ -44,7 +44,8 @@ generatorMain path k n clauses = do
 
 splitSatIO :: FilePath -> IO ()
 splitSatIO file = do
-  solution <- solution <$> miosSolve file
+  --solution <- solution <$> miosSolve file
+  solution <- solution <$> tarjanSolve file
   let solvable = not $ null solution
       output =
         if solvable

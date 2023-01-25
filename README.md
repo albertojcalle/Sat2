@@ -19,10 +19,13 @@ Many general SAT solvers exist that are not specific to 2-SAT, in many cases imp
 
 I will try to implement APT in Haskell as a usable package since currently there is no implementation in Haskell, as far as I am aware.
 
-##
+## Benchmark
 
+For speed comparisons we use the mios package. This sat solver uses CDCL which is based on DPLL to solve any kind of sat problem. But as we mentioned early this is not efficient for solving 2-sat.
+
+The criterion benchmark shows that our APT implementation is 5 times faster for 2-sat formulas with 100000 clauses.
 <!-- [criterion benchmark](https://htmlpreview.github.io/?https://github.com/albertojcalle/Sat2/blob/develop/bench.html) -->
-[criterion benchmark](https://albertojcalle.github.io/Sat2/bench.html)
+[criterion benchmark](https://albertojcalle.github.io/Sat2/bench/bench.html)
 
 
 
@@ -31,5 +34,6 @@ I will try to implement APT in Haskell as a usable package since currently there
 - [x] Algorithm implementation.
 - [x] Basic examples.
 - [x] Property testing.
-- [ ] Benchmark.
-- [ ] Profiling.
+- [x] Benchmark.
+- [x] Profiling.
+- [ ] Package release.
