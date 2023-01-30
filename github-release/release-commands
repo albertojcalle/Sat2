@@ -1,0 +1,6 @@
+
+# Update benchmark html
+
+git checkout gh-pages
+git fetch
+git checkout origin/main -- bench/bench.html

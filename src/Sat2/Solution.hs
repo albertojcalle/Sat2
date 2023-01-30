@@ -16,10 +16,10 @@ module Sat2.Solution (
 import SAT.Mios.Criteria ()
 import qualified Data.Map as Map
 import Sat2.SatTypes
-    ( Lit, Sat2, SolutionTree, Value(..), SatInfo (..), solution )
+    ( Lit, Sat2, SolutionTree, Value(..), SatInfo (..), solution, Sat )
 import Sat2.Common ( isNegative, isPositive, intersects )
 import Data.List (foldl')
-import Data.Map (toList)
+import Data.Map (toList, fromList)
 import Data.Maybe (isNothing)
 
 {-|

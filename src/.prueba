@@ -5,9 +5,14 @@ import Data.Tree
 import Data.List (partition, sort)
 import qualified Data.Graph as Graph
 import Sat2.Sat
-ruta =  "./test/Examples/safe/2sat-100c-90l-19.cnf"
+ruta =  "./test/Examples/safe/2sat-100c-90l-23.cnf"
 --ruta = "./test/Examples/safe/2sat-100c-90l-3.cnf"
 info0 <- cnfToSatInfo ruta
+
+info = (subEquivalences . findComponents . infoAddGraph) info0
+
+solution info
+
 info = ( findComponents . infoAddGraph) info0
 
 comp = map flatten (Graph.components $ graph info)

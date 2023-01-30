@@ -1,15 +1,14 @@
 module Sat2.Sat
-    {- (
+    (
         solve
-    ) -}
+    )
     where
--- ( buildG, path, scc, Edge, Graph, components, Vertex, Forest, stronglyConnComp )
 import qualified Data.Graph as Graph
 import Data.Tree
  ( flatten, drawForest, Tree (subForest) )
 import Data.List ( sort, union, foldl', partition )
-import Data.List.Extra (disjoint)
-import Sat2.Common ( buildEdge, intersects, isPositive, anyConnectedPair, reversePair)
+import Data.List.Extra (disjoint, allSame)
+import Sat2.Common ( buildEdge, intersects, isPositive, anyConnectedPair, reversePair, allEqual)
 import Sat2.CommonSat ( sortSat, opposite, oppositeRemain)
 import Sat2.SatTypes
     ( Sat2,
@@ -19,8 +18,6 @@ import Sat2.SatTypes
 import Data.Either (isLeft)
 import qualified Control.Applicative as Map
 import Sat2.Solution (emptySolution, flattenSolution, addSatToSolutionTree)
-
-
 
 {-|
 TODO: Check topological order of scc output
@@ -75,9 +72,9 @@ condensate info = case isSolvable info of
         newGraph = buildG (1, nVar info) newEdges  -}
 
 infoAddGraph :: SatInfo -> SatInfo
-infoAddGraph info = case isSolvable info of
-    Just False -> info
-    _ -> info{graph = sat2ToGraph (formula info) (nVar info)}
+infoAddGraph info = info{graph = sat2ToGraph f (nVar info)}
+    where
+        f = filter (not. allSame) (formula info)
 
 {-|
 Convert Sat2 formula to graph.

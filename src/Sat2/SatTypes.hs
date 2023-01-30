@@ -53,7 +53,7 @@ A positive value corresponds to a true literal, and negative corresponds to fals
  -}
 type Solution = [Int]
 
-data Value = NONE | TRUE | FALSE | BOTH deriving (Show, Eq)
+data Value = NONE | TRUE | FALSE | BOTH  deriving (Show, Eq)
 
 type SolutionTree = Map.Map Lit Value
 
