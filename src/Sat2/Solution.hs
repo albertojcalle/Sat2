@@ -1,4 +1,6 @@
 module Sat2.Solution (
+    completeTree,
+    treeToSolution,
     addSatToSolutionTree,
     addComponentToSolutionTree,
     addValueList,
@@ -21,6 +23,21 @@ import Sat2.Common ( isNegative, isPositive, intersects )
 import Data.List (foldl')
 import Data.Map (toList, fromList)
 import Data.Maybe (isNothing)
+
+
+
+treeToSolution :: SolutionTree -> [Lit]
+treeToSolution t = map valueToInt $ toList t
+
+
+{-|
+If some lits are not set BOTH is asigned.
+-}
+completeTree :: SolutionTree -> Int -> SolutionTree
+completeTree t n
+    | Map.member (abs n) t = completeTree t (n - 1)
+    | n > 0 = completeTree (Map.insert (abs n) BOTH t) (n-1)
+    | otherwise = t
 
 {-|
 Input:
@@ -82,6 +99,7 @@ valueToInt ::  (Lit, Value) -> Lit
 valueToInt (lit, value)
     | value == TRUE = lit
     | value == FALSE = negate lit
+    | value == BOTH = lit
     | otherwise = error "Conversion error valueToInt."
 
 intToValue :: Int -> (Lit, Value)
