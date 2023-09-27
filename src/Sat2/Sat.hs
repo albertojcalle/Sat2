@@ -1,6 +1,8 @@
 module Sat2.Sat
     (
-        solve
+        solve,
+        infoAddGraph,
+        findComponents
     )
     where
 import qualified Data.Graph as Graph

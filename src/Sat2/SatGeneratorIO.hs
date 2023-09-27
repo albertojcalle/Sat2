@@ -44,8 +44,8 @@ generatorMain path k n clauses = do
 
 splitSatIO :: FilePath -> IO ()
 splitSatIO file = do
-  --solution <- solution <$> miosSolve file
-  solution <- solution <$> tarjanSolve file
+  solution <- solution <$> miosSolve file
+  --solution <- solution <$> tarjanSolve file
   let solvable = not $ null solution
       output =
         if solvable

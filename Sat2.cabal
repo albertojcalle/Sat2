@@ -1,11 +1,11 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.2.
 --
 -- see: https://github.com/sol/hpack
 
 name:           Sat2
-version:        0.1.0.0
+version:        0.1.0.1
 synopsis:       2 sat linear solver
 description:    2-sat linear time solver implementing the Aspvall, Plass and Tarjan algorithm in Haskell. Please see the README on GitHub at <https://github.com/albertojcalle/Sat2#readme>
 category:       Logic
@@ -32,6 +32,7 @@ library
       Sat2.Sat
       Sat2.SatGenerator
       Sat2.SatGeneratorIO
+      Sat2.SatHelpers
       Sat2.SatTypes
       Sat2.Solution
       Sat2.SolversIO
